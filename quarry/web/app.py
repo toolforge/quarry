@@ -346,29 +346,50 @@ def output_query_meta(query_id):
 @app.route("/explain/<int:connection_id>")
 def output_explain(connection_id):
     cur = g.conn.replica.cursor()
-    try:
-        cur.execute('SHOW EXPLAIN FOR %d;' % connection_id)
-    except cur.InternalError as e:
-        if e.args[0] in [1094, 1915, 1933]:
-            # 1094 = Unknown thread id
-            # 1915, 1933 = Target is not running an EXPLAINable command
+
+    # Hack for T205214
+    # This method requires the SHOW EXPLAIN FOR being run on the very same
+    # host as the one the query is executed, but the analytics cluster is
+    # two hosts with a proxy at the front doing round-robin, without a way
+    # to force a routing.
+    # We need to try-to-connect-randomly-until-we-get-the-right-host with a
+    # hardcoded limit
+    tried = set()
+    for i in range(5):
+        cur.execute('SELECT @@GLOBAL.hostname;')
+        tried.add(cur.fetchall()[0][0])
+        if len(tried) > 2:  # number of different servers to try
+            break
+        try:
+            cur.execute('SHOW EXPLAIN FOR %d;' % connection_id)
             return Response(json.dumps(
                 {
-                    'headers': ['Error'],
-                    'rows': [['Hmm... Is the SQL actually running?!']],
+                    'headers': [c[0] for c in cur.description],
+                    'rows': cur.fetchall(),
                 }, default=json_formatter),
                 mimetype='application/json',
             )
-        else:
+        except cur.InternalError as e:
+            # 1094 = Unknown thread id
+            if e.args[0] == 1094:
+                continue  # Retry
+            # 1915, 1933 = Target is not running an EXPLAINable command
+            if e.args[0] in [1915, 1933]:
+                return Response(json.dumps(
+                    {
+                        'headers': ['Error'],
+                        'rows': [['Query is not EXPLAINable']],
+                    }, default=json_formatter), mimetype='application/json',
+                )
             raise
-    else:
-        return Response(json.dumps(
-            {
-                'headers': [c[0] for c in cur.description],
-                'rows': cur.fetchall(),
-            }, default=json_formatter),
-            mimetype='application/json',
-        )
+
+    return Response(json.dumps(
+        {
+            'headers': ['Error'],
+            'rows': [["Can't connect to the right server, "
+                      'or find the request being executed. (T205214)']],
+        }, default=json_formatter), mimetype='application/json',
+    )
 
 
 @app.route("/api/preferences/get/<key>")
