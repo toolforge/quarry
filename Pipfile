@@ -5,20 +5,18 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-
-# base
+# base:
 redis = "*"
 celery = "*"
 sqlalchemy = "*"
 pyyaml = "*"
 pymysql = "*"
-
-# web
+# web:
 flask = "*"
 greenlet = "*"
 mwoauth = "*"
 xlsxwriter = "*"
-
+flask-limiter = "*"
 # runner: none
 # killer: none
 

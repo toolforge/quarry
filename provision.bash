@@ -6,7 +6,7 @@ sed -i -e 's/stretch.localdomain/quarryvagrant.localdomain/' /etc/hosts
 
 # Update packages
 DEBIAN_FRONTEND=noninteractive apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes python3-venv redis-server mariadb-server
+DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes python3-venv redis-server mariadb-server git
 
 # Create folders
 mkdir -p /srv/results

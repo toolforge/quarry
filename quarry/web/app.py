@@ -3,6 +3,7 @@ import os
 import sqlite3
 
 from flask import Flask, render_template, redirect, g, request, url_for, Response
+from flask_limiter import Limiter
 from sqlalchemy import desc, func
 from sqlalchemy.exc import IntegrityError
 import yaml
@@ -42,6 +43,12 @@ app.register_blueprint(templatehelpers)
 global_conn = Connections(app.config)
 app.session_interface = RedisSessionInterface(global_conn.redis)
 
+limiter = Limiter(key_func=lambda: get_user().id,
+                  storage_uri='redis://%s:%s/%s' % (app.config['REDIS_HOST'],
+                                                    app.config['REDIS_PORT'],
+                                                    int(app.config['REDIS_LIMITER_DB'])))
+limiter.init_app(app)
+
 
 class QueriesRangeBasedPagination(RangeBasedPagination):
     def get_page_link(self, page_key, limit):
@@ -80,6 +87,11 @@ def setup_context():
 @app.teardown_request
 def kill_context(exception=None):
     g.conn.close_all()
+
+
+@app.errorhandler(429)
+def error_handler_ratelimit(e):
+    return "Rate limited. Bot are not allowed to use this app.", 429
 
 
 @app.route("/")
@@ -224,6 +236,7 @@ def api_set_meta():
 
 
 @app.route('/api/query/run', methods=['POST'])
+@limiter.limit("60/hour;120/day")
 def api_run_query():
     if get_user() is None:
         return "Authentication required", 401
