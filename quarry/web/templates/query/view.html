@@ -74,7 +74,7 @@
         {% endif %}
     </div>
     <div>
-        <button id="togglehl" class="btn btn-primary btn-sm pull-right">Toggle Highlighting</button>
+        <button id="togglehl" class="btn btn-primary btn-xs pull-right">Toggle Highlighting</button>
         <h3>SQL</h3>
         <textarea id="code"{% if not jsvars.can_edit %}readonly{% endif %}>{% if latest_rev %}{{ latest_rev.text }}{% endif %}</textarea>
     </div>
