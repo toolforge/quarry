@@ -29,7 +29,7 @@ class QueryRun(Base):
     query_rev_id = Column(Integer, ForeignKey('query_revision.id'))
     status = Column(Integer)
     timestamp = Column(DateTime)
-    task_id = Column(String)
+    task_id = Column(String(36))
     extra_info = Column(UnicodeText)
 
     rev = relationship('QueryRevision', uselist=False, primaryjoin='QueryRevision.id == QueryRun.query_rev_id')
