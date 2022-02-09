@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  labels:
+    app: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: {{ .Values.worker.repository }}:{{ .Values.worker.tag }}
+{{ if .Values.localdev.enabled }}
+          imagePullPolicy: Never
+{{ else }}
+          imagePullPolicy: Always
+{{ end }}
+          command: ["celery"]
+          args: ["--app", "quarry.web.worker", "worker"]
+          volumeMounts:
+            - mountPath: "/results"
+              name: results
+            - name: config
+              mountPath: /config/
+      volumes:
+        - name: results
+          persistentVolumeClaim:
+            claimName: results
+        - name: config
+          configMap:
+            name: config

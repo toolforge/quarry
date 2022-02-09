@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mywiki
+  labels:
+    app: mywiki
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mywiki
+  template:
+    metadata:
+      labels:
+        app: mywiki
+    spec:
+      containers:
+        - name: mywiki
+          image: mywiki:01 # replace with quay.io
+          imagePullPolicy: Never
+          env:
+          - name: MYSQL_USER
+            value: "repl"
+          - name: MYSQL_PASSWORD
+            value: "repl"
+          - name: MYSQL_DATABASE
+            value: "repl"
+          - name: MYSQL_RANDOM_ROOT_PASSWORD
+            value: "1"
