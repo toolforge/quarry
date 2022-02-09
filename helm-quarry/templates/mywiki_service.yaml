@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mywiki
+spec:
+  selector:
+    app: mywiki
+  ports:
+  - name: mywiki
+    port: 3306
+    targetPort: 3306

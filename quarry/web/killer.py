@@ -6,12 +6,7 @@ import pymysql
 from connections import Connections
 
 __dir__ = os.path.dirname(__file__)
-config = yaml.safe_load(open(os.path.join(__dir__, "../default_config.yaml")))
-try:
-    config.update(yaml.safe_load(open(os.path.join(__dir__, "../config.yaml"))))
-except IOError:
-    # is ok if we do not have config.yaml
-    pass
+config = yaml.safe_load(open(os.path.join(__dir__, "/config/config.yaml")))
 
 logging.basicConfig(
     filename=config["KILLER_LOG_PATH"],

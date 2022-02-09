@@ -1,0 +1,9 @@
+web:
+  repository: 'quarry' # replace with quay.io
+  pullPolicy: Never
+  tag: '01'
+
+worker:
+  repository: 'quarry' # replace with quay.io
+  pullPolicy: Never
+  tag: '01'
