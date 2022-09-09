@@ -1,59 +1,18 @@
 ---
 
-name: "Push Notification"
+name: "PR Notification"
 
 'on':
-  pull_request:
-  #pull_request: [opened, closed]
-
-#on: [push, pull_request, create, closed]
+  pull_request: [opened, closed]
 
 jobs:
   notification:
     runs-on: ubuntu-latest
-    name: Alert to IRC
+    name: Notify on IRC
     steps:
       - name: irc notification
         run: |
           sudo apt-get update
           sudo apt-get install netcat -y
-          message="${{ github.actor }} pushed ${{ github.event.ref }} ${{ github.event.compare }}"
-          echo -e "USER notefromgitlab notefromgitlab notefromgitlab :notefromgitlab\nNICK notefromgitlab\nPRIVMSG Rook :${message}\nQUIT\n" | nc irc.libera.chat 6667
-
-#          ${{ github.actor }} pushed ${{ github.event.ref }} ${{ github.event.compare }}
-#jobs:
-#  test:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: irc push
-#        uses: rectalogic/notify-irc@v2
-#        #if: github.event_name == 'create' && github.event.ref_type == ''
-#        #if: github.event_name == 'opened'
-#        with:
-#          channel: "Rook"
-#          server: "irc.libera.chat"
-#          port: 6667
-#          tls: false
-#          nickname: notificationfromgithub2345343
-#          message: |
-#            ${{ github.actor }} pushed ${{ github.event.ref }} ${{ github.event.compare }}
-#            ${{ join(github.event.commits.*.message) }}
-#      - name: irc pull request
-#        uses: rectalogic/notify-irc@v2
-#        if: github.event_name == 'closed'
-#        with:
-#          channel: "Rook"
-#          server: "irc.libera.chat"
-#          nickname: my-github-notifier
-#          message: |
-#            ${{ github.actor }} opened PR ${{ github.event.pull_request.html_url }}
-#      - name: closed PR
-#        uses: rectalogic/notify-irc@v2
-#        if: github.event_name == 'closed'
-#        #if: github.event.pull_request.merged == true && github.event_name == 'closed'
-#        with:
-#          channel: "Rook"
-#          server: "irc.libera.chat"
-#          nickname: my-github-notifier
-#          message: |
-#            ${{ github.actor }} closed ${{ github.event.ref }} ${{ github.event.compare }}
+          message="${{ github.actor }} ${{ github.event.action }} ${{ github.event.pull_request._links.html.href }}"
+          echo -e "USER notefromgithub notefromgithub notefromgithub :notefromgithub\nNICK notefromgithub\nJOIN #wikimedia-cloud-feed\nPRIVMSG #wikimedia-cloud-feed :${message}\nQUIT\n" | nc irc.libera.chat 6667
