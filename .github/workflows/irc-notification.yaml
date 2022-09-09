@@ -3,7 +3,8 @@
 name: "PR Notification"
 
 'on':
-  pull_request: [opened, closed]
+  pull_request:
+    types: [opened, closed]
 
 jobs:
   notification:
