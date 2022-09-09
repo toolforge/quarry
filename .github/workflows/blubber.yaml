@@ -1,0 +1,19 @@
+---
+
+name: "build and run docker"
+
+'on':
+  pull_request:
+
+jobs:
+  docker-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: run blubber
+        run: |
+          curl -s -H 'content-type: application/yaml' --data-binary @".pipeline/blubber.yaml" https://blubberoid.wikimedia.org/v1/quarry-test | docker build --tag blubber-quarry:01 --file - .
+      - name: run blubber container
+        run: |
+          docker run blubber-quarry:01
