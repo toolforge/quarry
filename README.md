@@ -62,3 +62,12 @@ To pre-compile nunjucks templates:
 
 See also commands listed in the mainters documentation:
 https://wikitech.wikimedia.org/wiki/Portal:Data_Services/Admin/Quarry
+
+## Comment to Phabricator ##
+
+To have a PR make comments to an associated phabricator ticket have the last line of the commit look like:
+
+Bug: <ticket number>
+
+For example:
+Bug: T317566
