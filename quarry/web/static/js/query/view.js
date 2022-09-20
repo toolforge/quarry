@@ -180,6 +180,10 @@ $( function () {
 	} );
 
 	$( '#stop-code' ).click( function () {
+		// revert favicon to default color
+		var favicon = document.querySelector("link[rel='icon']");
+		favicon.href = '/static/img/favicon.png';
+
 		$.post( '/api/query/stop', {
 			query_database: $( '#query-db' ).val(),
 			qrun_id: vars.qrun_id
@@ -193,6 +197,10 @@ $( function () {
 	} );
 
 	$( '#run-code' ).click( function () {
+		// update favicon to running color
+		var favicon = document.querySelector("link[rel='icon']");
+		favicon.href = '/static/img/favicon-running.png';
+
 		$.post( '/api/query/run', {
 			text: editor !== null ? editor.getValue() : $( '#code' ).val(),
 			query_database: $( '#query-db' ).val(),
@@ -242,6 +250,10 @@ $( function () {
 					let title = $( '#title' ).val() ? '"' + $( '#title' ).val() + '"' : 'Untitled query #' + vars.query_id;
 					sendNotification( title + ' execution has been completed' );
 				}
+
+				// revert favicon to default color
+				var favicon = document.querySelector("link[rel='icon']");
+				favicon.href = '/static/img/favicon.png';
 			} else if ( data.status === 'queued' || data.status === 'running' ) {
 				window.lastStatusCheck = setTimeout( function () {
 					checkStatus( qrun_id, false );
