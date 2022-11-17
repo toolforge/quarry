@@ -130,7 +130,7 @@ $( function () {
 				query_id: vars.query_id,
 				title: title
 			} ).done( function ( /* data */ ) {
-				document.title = ( title || 'Untitled query #' + vars.query_id ) + ' - Quarry';
+				document.title =  title + ' - Quarry';
 			} );
 		} );
 	}
@@ -247,7 +247,7 @@ $( function () {
 				);
 
 				if ( !silent && vars.preferences.use_notifications ) {
-					let title = $( '#title' ).val() ? '"' + $( '#title' ).val() + '"' : 'Untitled query #' + vars.query_id;
+					let title = '"' + $( '#title' ).val() + '"';
 					sendNotification( title + ' execution has been completed' );
 				}
 
