@@ -31,6 +31,7 @@ def new_query():
         return redirect("/login?next=/query/new")
     query = Query()
     query.user = get_user()
+    query.title = "Untitled query"
     g.conn.session.add(query)
     g.conn.session.commit()
     return redirect(url_for("query.query_show", query_id=query.id))
