@@ -4,10 +4,33 @@ import sqlite3
 import codecs
 from datetime import datetime
 from decimal import Decimal
+from typing import List
 
 INITIAL_SQL = """
 CREATE TABLE resultsets (id, headers, rowcount)
 """
+
+
+def get_unique_columns(raw_columns: List[str]) -> List[str]:
+    """
+    SQLite (or any SQL engine, really) fails if a table would have duplicates in column names.
+    However, results can have duplicate column names, for example with aliases or joins. For that
+    reason, we add a counter to duplicate column names so that for example (foo, foo) turns into
+    (foo, foo_2) which works better.
+    """
+    unique_columns = []
+
+    for column in raw_columns:
+        if column not in unique_columns:
+            unique_columns.append(column)
+            continue
+
+        c = 2
+        while f"{column}_{c}" in unique_columns:
+            c += 1
+        unique_columns.append(f"{column}_{c}")
+
+    return unique_columns
 
 
 class SQLiteResultWriter(object):
@@ -31,7 +54,9 @@ class SQLiteResultWriter(object):
 
     def start_resultset(self, columns, rowcount):
         self._resultsets.append({"headers": columns, "rowcount": rowcount})
-        sanitized_columns = [self._quote_identifier(c) for c in columns]
+        unique_columns = get_unique_columns(columns)
+        sanitized_columns = [self._quote_identifier(c) for c in unique_columns]
+
         table_name = self._get_current_resultset_table()
         sql = "CREATE TABLE %s (__id__ INTEGER PRIMARY KEY, %s)" % (
             table_name,
@@ -40,10 +65,10 @@ class SQLiteResultWriter(object):
         self.db.execute(sql)
         self.db.execute(
             "INSERT INTO resultsets (id, headers, rowcount) VALUES (?, ?, ?)",
-            (self.resultset_id, json.dumps(columns), rowcount),
+            (self.resultset_id, json.dumps(unique_columns), rowcount),
         )
         self.db.commit()
-        self.column_count = len(columns)
+        self.column_count = len(unique_columns)
         self.cur_row_id = 0
 
     def add_rows(self, rows):
