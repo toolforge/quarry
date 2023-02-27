@@ -133,6 +133,16 @@ def query_runs_all():
         )
     else:
         session["recent_queries_link"] = url_for("query.query_runs_all")
+    # Handle search parameters
+    args = request.args
+    search_term = args.get("search_term")
+    search_parameter = ""
+    if search_term is not None:
+        search_parameter = f"search_term={search_term}"
+        queries = queries.filter(
+            Query.title.ilike(f"%{search_term}%")
+            | Query.description.ilike(f"%{search_term}%")
+        )
     limit = int(
         request.args.get(
             "limit", current_app.config.get("QUERY_RESULTS_PER_PAGE", 50)
@@ -152,6 +162,8 @@ def query_runs_all():
         queries=queries,
         prev_link=prev_link,
         next_link=next_link,
+        search_parameter=search_parameter,
+        search_term=search_term,
         queries_filter=queries_filter,
     )
 

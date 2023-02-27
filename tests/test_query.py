@@ -14,6 +14,7 @@ class TestQuery:
     @pytest.fixture(autouse=True)
     def setup_method(self, mocker, client):
         self.query_id = 66
+        self.query_title = "a query with a grand title"
         self.latest_rev_id = 88
         self.resultset_id = 1
         self.connection_id = 1
@@ -37,7 +38,7 @@ class TestQuery:
             latest_rev=r,
             description="fake query entry",
             user=u,
-            title="a query with a grand title",
+            title=self.query_title,
             last_touched=datetime.utcnow(),
         )
 
@@ -133,6 +134,12 @@ class TestQuery:
         assert b"extra query entry #2" in response.data
         assert b"extra query entry #7" not in response.data
         assert response.status_code == 200
+
+    def test_query_search_by_title(self, mocker):
+        response = self.client.get("/query/runs/all?search_term=%s" % self.query_title)
+
+        assert response.status_code == 200
+        assert response.data
 
     def test_output_query_meta(self, mocker):
         response = self.client.get("/query/%d/meta" % self.query_id)
