@@ -308,6 +308,7 @@ $( function () {
 			pagingType: 'simple_numbers',
 			paging: data.rows.length > 100,
 			pageLength: 100,
+			lengthMenu: [10, 25, 50, 100, 200, 250, 500],
 			deferRender: true,
 			order: [],
 			destroy: true
