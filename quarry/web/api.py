@@ -232,7 +232,7 @@ def get_dbs() -> Response:
             {
                 "dbs": list(
                     set(
-                        db_result[-1].strip()
+                        db_result[-1].strip().rstrip(";")
                         for db_result in known_dbs
                         # the db data might be NULL, empty strings or spaces+tabs only so this helps a bit to show only
                         # likely names
