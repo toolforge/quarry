@@ -71,7 +71,7 @@ def create_app(test_config=None):
     app.teardown_request(kill_context)
 
     metrics_init_app(app)
-    cache = Cache(app)
+    cache = Cache(app)  # noqa: F841, this var is used in landing.html template
 
     @app.route("/")
     def index():
