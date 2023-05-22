@@ -10,12 +10,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `mywiki_p` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
-
 USE `mywiki_p`;
-
-DROP DATABASE IF EXISTS repl;
-GRANT SELECT ON mywiki_p.* TO 'repl'@'%';
 
 DROP TABLE IF EXISTS `actor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
