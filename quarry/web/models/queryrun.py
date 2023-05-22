@@ -1,3 +1,4 @@
+import datetime
 import json
 from sqlalchemy import (
     Column,
@@ -37,7 +38,7 @@ class QueryRun(Base):
     id = Column(Integer, primary_key=True)
     query_rev_id = Column(Integer, ForeignKey("query_revision.id"))
     status = Column(Integer)
-    timestamp = Column(DateTime)
+    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
     task_id = Column(String)
     extra_info = Column(UnicodeText)
 
