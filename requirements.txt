@@ -30,3 +30,4 @@ xlsxwriter==3.0.3
 importlib-metadata==4.6.3
 zipp==3.5.0
 typing-extensions==3.10.0.0
+flask_caching==2.0.2

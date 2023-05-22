@@ -7,7 +7,10 @@
 <div class="jumbotron">
     <div class="container">
         <h1>Quarry</h1>
-        <h3>Run SQL queries against Wikipedia &amp; other databases from your browser!</h3>
+        <p>Run SQL queries against Wikipedia &amp; other databases from your browser!</p>
+        {% cache 30 %}
+        <p>{{ stats_count_users }} users have run {{ stats_count_runs }} queries so far</p>
+        {% endcache %}
         <br />
         <div>
             {% if user %}
