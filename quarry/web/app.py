@@ -75,11 +75,12 @@ def create_app(test_config=None):
 
     @app.route("/")
     def index():
-        print('cc')
-        return render_template("landing.html", user=get_user(),
-                               stats_count_users=global_conn.session.query(User).count(),
-                               stats_count_runs=global_conn.session.query(QueryRun).count()
-                               )
+        return render_template(
+            "landing.html",
+            user=get_user(),
+            stats_count_users=global_conn.session.query(User).count(),
+            stats_count_runs=global_conn.session.query(QueryRun).count(),
+        )
 
     return app
 
