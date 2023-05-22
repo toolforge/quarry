@@ -1,5 +1,5 @@
-# Use official python base image, small and debian edition
-FROM amd64/python:3.7.3-slim
+# Use official python base image, small edition
+FROM docker.io/amd64/python:3.11-slim
 
 ARG purpose=dev
 
