@@ -60,7 +60,7 @@ def star_query() -> Union[Tuple[str, int], str]:
 
 
 @api_blueprint.route("/api/query/meta", methods=["POST"])
-def api_set_meta() -> Tuple[Union[str, Response], int]:
+def api_set_meta() -> tuple[str, int] | Response:
     if get_user() is None:
         return "Authentication required", 401
 
@@ -81,14 +81,13 @@ def api_set_meta() -> Tuple[Union[str, Response], int]:
         query.description = request.form["description"]
     g.conn.session.add(query)
     g.conn.session.commit()
-    return (
-        Response(json.dumps({"id": query.id}), mimetype="application/json"),
-        200,
+    return Response(
+        json.dumps({"id": query.id}), mimetype="application/json", status=200
     )
 
 
 @api_blueprint.route("/api/query/run", methods=["POST"])
-def api_run_query() -> Tuple[Union[str, Response], int]:
+def api_run_query() -> tuple[str, int] | Response:
     if get_user() is None:
         return "Authentication required", 401
     text = request.form["text"]
@@ -141,17 +140,15 @@ def api_run_query() -> Tuple[Union[str, Response], int]:
     g.conn.session.add(query_rev)
     g.conn.session.add(query_run)
     g.conn.session.commit()
-    return (
-        Response(
-            json.dumps({"qrun_id": query_run.id}),
-            mimetype="application/json",
-        ),
-        200,
+    return Response(
+        json.dumps({"qrun_id": query_run.id}),
+        mimetype="application/json",
+        status=200,
     )
 
 
 @api_blueprint.route("/api/query/stop", methods=["POST"])
-def api_stop_query() -> Tuple[Union[str, Response], int]:
+def api_stop_query() -> tuple[str, int] | Response:
     if get_user() is None:
         return "Authentication required", 401
 
@@ -185,14 +182,13 @@ def api_stop_query() -> Tuple[Union[str, Response], int]:
     query_run.status = QueryRun.STATUS_STOPPED
     g.conn.session.add(query_run)
     g.conn.session.commit()
-    return (
-        Response(json.dumps({"stopped": output}), mimetype="application/json"),
-        200,
+    return Response(
+        json.dumps({"stopped": output}), mimetype="application/json", status=200
     )
 
 
 @api_blueprint.route("/api/preferences/get/<key>")
-def pref_get(key) -> Response:
+def pref_get(key) -> tuple[str, int] | Response:
     if get_user() is None:
         return "Authentication required", 401
 
@@ -209,16 +205,15 @@ def pref_get(key) -> Response:
 
 
 @api_blueprint.route("/api/preferences/set/<key>/<value>")
-def pref_set(key, value) -> Union[Tuple[str, int], Tuple[Response, int]]:
+def pref_set(key, value) -> tuple[str, int] | Response:
     if get_user() is None:
         return "Authentication required", 401
 
     get_preferences()[key] = None if value == "null" else value
-    return (
-        Response(
-            json.dumps({"key": key, "success": ""}), mimetype="application/json"
-        ),
-        201,
+    return Response(
+        json.dumps({"key": key, "success": ""}),
+        mimetype="application/json",
+        status=201,
     )
 
 
