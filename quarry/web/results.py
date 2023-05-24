@@ -6,9 +6,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import List
 
-INITIAL_SQL = """
-CREATE TABLE resultsets (id, headers, rowcount)
-"""
+INITIAL_SQL = "CREATE TABLE resultsets (id, headers, rowcount)"
 
 
 def get_unique_columns(raw_columns: List[str]) -> List[str]:
@@ -57,12 +55,15 @@ class SQLiteResultWriter(object):
         unique_columns = get_unique_columns(columns)
         sanitized_columns = [self._quote_identifier(c) for c in unique_columns]
 
+        # Create table that will store the resultset
         table_name = self._get_current_resultset_table()
         sql = "CREATE TABLE %s (__id__ INTEGER PRIMARY KEY, %s)" % (
             table_name,
             ", ".join(sanitized_columns),
         )
         self.db.execute(sql)
+
+        # Add the new one to the resultset index table
         self.db.execute(
             "INSERT INTO resultsets (id, headers, rowcount) VALUES (?, ?, ?)",
             (self.resultset_id, json.dumps(unique_columns), rowcount),
