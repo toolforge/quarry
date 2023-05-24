@@ -164,17 +164,17 @@ def api_stop_query() -> Tuple[Union[str, Response], int]:
     query_run = (
         g.conn.session.query(QueryRun).filter(QueryRun.id == qrun_id).one()
     )
-    result_dictionary = ast.literal_eval(query_run.extra_info)
-    if "connection_id" in result_dictionary:
-        g.replica.connection = db_of_process
-        cur = g.replica.connection.cursor()
-        try:
-            cur.execute("KILL %s;", (result_dictionary["connection_id"]))
-            output = "job stopped"
-        except OperationalError:
-            output = "job not running"
-    else:
-        output = "job not running"
+    output = "job not running"
+    if query_run.extra_info:
+        result_dictionary = ast.literal_eval(query_run.extra_info)
+        if "connection_id" in result_dictionary:
+            g.replica.connection = db_of_process
+            cur = g.replica.connection.cursor()
+            try:
+                cur.execute("KILL %s;", (result_dictionary["connection_id"]))
+                output = "job stopped"
+            except OperationalError:
+                output = "job not running"
 
     # Stopping the job usually gets a stopped status. However some jobs stopped
     # before the stop button was pressed, and didn't update the DB to reflect
