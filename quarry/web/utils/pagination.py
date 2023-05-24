@@ -113,7 +113,6 @@ class RangeBasedPagination(object):
                 self.direction == "next"
                 or (self.direction == "prev" and page_items_count == self.limit)
             ):
-
                 prev_link = self.get_page_link(
                     page_key=self.get_page_key_from_page_item(page_items[0]),
                     limit=-1 * self.limit,

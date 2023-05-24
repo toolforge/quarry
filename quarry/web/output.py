@@ -4,7 +4,7 @@ import json
 import types
 
 from flask import Response, escape
-from werkzeug.contrib.iterio import IterI
+from .utils.iterio import IterI
 import xlsxwriter
 
 

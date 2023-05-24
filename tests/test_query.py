@@ -70,7 +70,7 @@ class TestQuery:
 
         assert response.status_code == 302
         assert (
-            response.headers["Location"] == "http://localhost/query/%d" % self.query_id
+            response.headers["Location"] == "/query/%d" % self.query_id
         )
 
         self.db_session.filter.assert_has_calls([mocker.call(User.id == "MyUserID")])
@@ -80,7 +80,7 @@ class TestQuery:
 
         response = self.client.get("/query/new")
         assert response.status_code == 302
-        assert response.headers["Location"] == "http://localhost/login?next=/query/new"
+        assert response.headers["Location"] == "/login?next=/query/new"
 
     def test_query_show(self, mocker):
         response = self.client.get("/query/%s" % self.query_id)
@@ -172,7 +172,7 @@ class TestQuery:
         self.db_session.assert_has_calls([mocker.call.add(Query)])
 
         assert response.status_code == 302
-        assert response.headers["Location"] == "http://localhost/query/%d" % (
+        assert response.headers["Location"] == "/query/%d" % (
             self.query_id + 1,
         )
 

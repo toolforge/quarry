@@ -93,7 +93,7 @@ class TestUser:
                 )
             ]
         )
-        assert response.headers["Location"] == "http://localhost/"
+        assert response.headers["Location"] == "/"
         assert response.status_code == 302
 
     def test_user_page(self, mocker):

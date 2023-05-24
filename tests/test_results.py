@@ -100,8 +100,11 @@ class TestResults:
         self.db_session.assert_has_calls(
             [
                 mocker.call(
-                    'CREATE TABLE resultset_555 (__id__ INTEGER PRIMARY KEY, "manny", "moe", '
-                    '"moe_2", "moe_3", """jack""", "nulltest")'
+                    'CREATE TABLE resultsets (id, headers, rowcount)',
+                    'CREATE TABLE resultset_555 (__id__ INTEGER PRIMARY KEY, "manny", "moe", "moe_2", "moe_3", '
+                    '"""jack""", "nulltest")',
+                    'INSERT INTO resultsets (id, headers, rowcount) VALUES (?, ?, ?)',
+                    (555, '["manny", "moe", "moe_2", "moe_3", "\\"jack\\"", "nulltest\\u0000"]', 7)
                 )
             ]
         )

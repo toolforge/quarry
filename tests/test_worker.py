@@ -109,7 +109,7 @@ class TestWorker:
         worker.run_query(self.run_id)
 
         # This isn't the full set of queries; comparing the actual session
-        #  queries is messy. This should a least make sure that the DB
+        #  queries is messy. This should at least make sure that the DB
         #  is getting hit.
         self.db_session.assert_has_calls(
             [
