@@ -51,7 +51,9 @@ class RedisSessionInterface(SessionInterface):
         if not session:
             self.redis.delete(self.prefix + session.sid)
             if session.modified:
-                response.delete_cookie(app.config["SESSION_COOKIE_NAME"], domain=domain)
+                response.delete_cookie(
+                    app.config["SESSION_COOKIE_NAME"], domain=domain
+                )
             return
         redis_exp = self.get_redis_expiration_time(app, session)
         cookie_exp = self.get_expiration_time(app, session)

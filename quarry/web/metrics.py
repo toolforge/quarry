@@ -29,7 +29,7 @@ class QuarryQueryRunStatusCollector:
             labels=["status"],
         )
 
-        for (status_id, query_count) in queries_per_status:
+        for status_id, query_count in queries_per_status:
             metric_family.add_metric(
                 [QueryRun.STATUS_MESSAGES[status_id]], query_count
             )

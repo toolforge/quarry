@@ -53,13 +53,13 @@ def _mixed_join(iterable, sentinel):
     first_item = next(iterator, sentinel)
     if isinstance(first_item, bytes):
         return first_item + b"".join(iterator)
-    return first_item + u"".join(iterator)
+    return first_item + "".join(iterator)
 
 
 def _newline(reference_string):
     if isinstance(reference_string, bytes):
         return b"\n"
-    return u"\n"
+    return "\n"
 
 
 class IterIO(object):
