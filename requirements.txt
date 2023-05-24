@@ -10,3 +10,4 @@ XlsxWriter==3.1.1
 celery==5.2.7
 prometheus_client==0.16.0
 prometheus_flask_exporter==0.22.4
+greenlet==2.0.2
