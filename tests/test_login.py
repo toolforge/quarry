@@ -25,23 +25,23 @@ class TestLogin:
             flask_sess["user_id"] = "MyUserID"
             flask_sess["request_token"] = "request token"
             flask_sess["preferences"] = {"breakfast": "waffles", "lunch": "tacos"}
-            flask_sess["return_to_url"] = "return/to/url"
+            flask_sess["return_to_url"] = "/return/to/url"
 
     def test_login(self, mocker):
         mocker.patch(
-            "mwoauth.Handshaker.initiate", return_value=("loginredir", "fake_token")
+            "mwoauth.Handshaker.initiate", return_value=("/loginredir", "fake_token")
         )
         response = self.client.get("/login")
 
         assert response.status_code == 302
-        assert response.headers["Location"] == "http://localhost/loginredir"
+        assert response.headers["Location"] == "/loginredir"
 
     def test_oauth_callback(self, mocker):
         print("first try")
         response = self.client.get("/oauth-callback?woopity=bloopity")
 
         assert response.status_code == 302
-        assert response.headers["Location"] == "http://localhost/"
+        assert response.headers["Location"] == "/"
 
         mocker.patch("mwoauth.Handshaker.complete", return_value=("fake_token"))
         mocker.patch(
@@ -52,10 +52,10 @@ class TestLogin:
         response = self.client.get("/oauth-callback?woopity=bloopity")
 
         assert response.status_code == 302
-        assert response.headers["Location"] == "http://localhost/return/to/url"
+        assert response.headers["Location"] == "/return/to/url"
 
     def test_logout(self, mocker):
         response = self.client.get("/logout")
 
         assert response.status_code == 302
-        assert response.headers["Location"] == "http://localhost/"
+        assert response.headers["Location"] == "/"
