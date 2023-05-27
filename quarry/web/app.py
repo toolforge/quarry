@@ -1,6 +1,7 @@
 import os
 
 from flask import current_app, Flask, render_template, g
+from flask_caching import Cache
 import yaml
 
 from .connections import Connections
@@ -15,6 +16,8 @@ from .query import query_blueprint
 from .run import run_blueprint
 from .api import api_blueprint
 from .webhelpers import templatehelpers
+from .models.user import User
+from .models.queryrun import QueryRun
 
 __dir__ = os.path.dirname(__file__)
 
@@ -68,10 +71,16 @@ def create_app(test_config=None):
     app.teardown_request(kill_context)
 
     metrics_init_app(app)
+    cache = Cache(app)  # noqa: F841, this var is used in landing.html template
 
     @app.route("/")
     def index():
-        return render_template("landing.html", user=get_user())
+        return render_template(
+            "landing.html",
+            user=get_user(),
+            stats_count_users=global_conn.session.query(User).count(),
+            stats_count_runs=global_conn.session.query(QueryRun).count(),
+        )
 
     return app
 
