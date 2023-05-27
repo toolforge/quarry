@@ -41,7 +41,8 @@ def setup_context():
 
 
 def kill_context(exception=None):
-    g.conn.close_all()
+    if g.conn:
+        g.conn.close_all()
     del g.replica.connection
 
 
