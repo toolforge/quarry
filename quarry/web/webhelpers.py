@@ -23,9 +23,12 @@ def get_pretty_delay(diff, suffix="", default="just now"):
     )
 
     for period, singular, plural in periods:
-
         if period:
-            return "%d %s %s" % (period, singular if period == 1 else plural, suffix)
+            return "%d %s %s" % (
+                period,
+                singular if period == 1 else plural,
+                suffix,
+            )
 
     return default
 
@@ -34,4 +37,4 @@ def get_pretty_delay(diff, suffix="", default="just now"):
 def timesince(dt, default="just now"):
     now = datetime.utcnow()
     diff = now - dt
-    return get_pretty_delay(diff, "ago", default)
+    return get_pretty_delay(diff, suffix="ago", default=default)
