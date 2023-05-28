@@ -157,9 +157,9 @@ output += "\n";
 }
 output += "\n";
 if(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "extra")),"replag")) {
-output += "\n<div class=\"alert alert-warning\">\n  <h4 class=\"alert-heading\">Replication lag</h4>\n  <p class=\"mb-0\">The database on which this query was executed has a <a href=\"https://replag.toolforge.org/\">synchronization delay</a> with the wiki.\n      This can be caused by maintenance or incident on database, and should be resolved soon.\n      The modifications that was recently made on the wiki are not yet taken into account in your results.<br>\n      The lag is <b>";
+output += "\n<div class=\"alert alert-warning\">\n  <h4 class=\"alert-heading\">Replication lag</h4>\n  <p class=\"mb-0\">The database on which this query was executed has a <a href=\"https://replag.toolforge.org/\">synchronization delay</a> with the wiki.\n      This can be caused by maintenance or incident on database, and should be resolved soon.<br>\n      The modifications that was made in last <b>";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "extra")),"replag"), env.opts.autoescape);
-output += " seconds</b></p>\n</div>\n";
+output += "</b> on the wiki are not taken into account in results bellow.<br>\n</div>\n";
 ;
 }
 output += "\n";
