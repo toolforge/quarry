@@ -13,3 +13,11 @@ This query is currently executing...
 <!--<button id="show-explain" type="button" class="btn btn-default btn-xs">Explain</button>-->
 {% endif %}
 {% endif %}
+{% if extra.replag %}
+<div class="alert alert-warning">
+  <h4 class="alert-heading">Replication lag</h4>
+  <p class="mb-0">The database on which this query was executed has a <a href="https://replag.toolforge.org/">synchronization delay</a> with the wiki.
+      This can be caused by maintenance or incident on database, and should be resolved soon.<br>
+      The modifications that was made in last <b>{{ extra.replag }}</b> on the wiki are not taken into account in results bellow.<br>
+</div>
+{% endif %}

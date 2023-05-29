@@ -1197,3 +1197,14 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `heartbeat_p` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+USE `heartbeat_p`;
+GRANT SELECT ON heartbeat_p.* TO 'repl'@'%';
+
+CREATE TABLE `heartbeat` (
+  `shard` varbinary(10) NOT NULL,
+  `last_updated` varbinary(26) NOT NULL,
+  `lag` decimal(25, 4)
+) ENGINE=InnoDB DEFAULT CHARSET=binary;
+INSERT INTO heartbeat_p.heartbeat (shard, last_updated, `lag`) VALUES (0x7331, 0x323032332D30352D32355430353A33393A33382E303030393930, 278631.9990);

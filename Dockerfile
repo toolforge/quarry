@@ -1,5 +1,5 @@
 # Use official python base image, small and debian edition
-FROM amd64/python:3.7.3-slim
+FROM amd64/python:3.7.16-slim
 
 ARG purpose=dev
 

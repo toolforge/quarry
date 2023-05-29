@@ -1,6 +1,7 @@
 import json
 import os
 import timeit
+from datetime import timedelta
 
 from celery import Celery
 from celery.signals import worker_process_init, worker_process_shutdown
@@ -13,6 +14,7 @@ from .models.queryrun import QueryRun
 from .results import SQLiteResultWriter
 from .replica import Replica
 from .utils import monkey as _unused  # noqa: F401
+from .webhelpers import get_pretty_delay
 
 
 __dir__ = os.path.dirname(__file__)
@@ -32,6 +34,11 @@ except IOError:
     pass
 
 conn = None
+
+
+def get_replag(cur):
+    cur.execute("SELECT lag FROM heartbeat_p.heartbeat;")
+    return int(cur.fetchall()[0][0])
 
 
 @worker_process_init.connect
@@ -107,12 +114,16 @@ def run_query(query_run_id):
         output.close()
         stoptime = timeit.default_timer()
         qrun.status = QueryRun.STATUS_COMPLETE
-        qrun.extra_info = json.dumps(
-            {
-                "resultsets": output.get_resultsets(),
-                "runningtime": "%.2f" % (stoptime - starttime),
-            }
-        )
+        extra_info = {
+            "resultsets": output.get_resultsets(),
+            "runningtime": "%.2f" % (stoptime - starttime),
+        }
+        # Add replica lag if it's above threshold, to be displayed to user
+        replag = get_replag(cur)
+        if replag > 180:  # 3 minutes
+            extra_info["replag"] = get_pretty_delay(timedelta(seconds=replag))
+        qrun.extra_info = json.dumps(extra_info)
+
         celery_log.info("Completed run for qrun:%s successfully", qrun.id)
         conn.session.add(qrun)
         conn.session.commit()
