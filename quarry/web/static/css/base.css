@@ -34,6 +34,18 @@
     margin-bottom: 0px;
     border-bottom-width: 0px;
     text-align: center;
+    padding: .5em;
+    background-color: #E8A02E;
+    color: black;
+}
+
+.maintenance-msg p {
+    margin-bottom: 0;
+}
+
+.maintenance-msg a {
+    color: #183490;
+    text-decoration: underline;
 }
 
 .flashes {
