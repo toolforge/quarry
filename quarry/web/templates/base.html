@@ -29,7 +29,7 @@
 
 <body>
 {% if config['MAINTENANCE_MSG'] %}
-<div class="alert alert-warning maintenance-msg">
+<div class="maintenance-msg">
     <p>{{ config['MAINTENANCE_MSG'] | safe }}</p>
 </div>
 {% endif %}
