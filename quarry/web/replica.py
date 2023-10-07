@@ -26,7 +26,9 @@ class Replica:
             self.database_p = "centralauth_p"
         else:
             self.database_name = (
-                self.dbname if not self.dbname.endswith("_p") else self.dbname[:-2]
+                self.dbname
+                if not self.dbname.endswith("_p")
+                else self.dbname[:-2]
             )
             self.database_p = (
                 self.dbname
