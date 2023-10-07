@@ -15,12 +15,22 @@ task_acks_late: True  # Tasks are idempotent!
 task_track_started: True
 worker_prefetch_multiplier: 1 # Tasks can run for a long time
 
+# Run queries against the live wikimedia replica databases. This requires a
+# toolforge account, so that you can retrieve your credentials from
+# ~/replica.my.cnf (and log into toolforge to establish the SOCKS5 proxy). These
+# lines should remain commented if you're not using a SOCKS5 proxy. The IP
+# address of the host running the docker container. On Windows or macOS this
+# might be `host.docker.internal`.
+# REPLICA_SOCKS5_PROXY_HOST: '172.17.0.1'
+# REPLICA_SOCKS5_PROXY_PORT: 1080
+
+
 # Run queries against a fake wiki database
-REPLICA_DOMAIN: ''
-REPLICA_HOST: 'mywiki'
-REPLICA_DB: 'mywiki_p'
-REPLICA_USER: 'repl'
-REPLICA_PASSWORD: 'repl'
+# Change these 3 lines if you're using the live replicas.
+REPLICA_DOMAIN: ''  # Change to `analytics.db.svc.wikimedia.cloud` for live replicas
+REPLICA_USER: 'repl'  # For live replicas, your replica.my.cnf username
+REPLICA_PASSWORD: 'repl'  # For live replicas, your replica.my.cnf password
+
 REPLICA_PORT: 3306
 OUTPUT_PATH_TEMPLATE: '/results/%s/%s/%s.sqlite'
 REDIS_HOST: 'redis'

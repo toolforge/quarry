@@ -20,6 +20,8 @@ services:
       - .:/app
       - results:/results
     entrypoint: ["celery", "--app", "quarry.web.worker", "worker", ]
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
     depends_on:
       - "db"
       - "redis"

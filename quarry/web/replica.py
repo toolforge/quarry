@@ -1,4 +1,5 @@
 import pymysql
+import socks
 
 
 class ReplicaConnectionException(Exception):
@@ -18,6 +19,7 @@ class Replica:
 
         if self.dbname == "meta" or self.dbname == "meta_p":
             self.database_name = "s7"
+
             self.database_p = "meta_p"
         elif self.dbname == "centralauth" or self.dbname == "centralauth_p":
             self.database_name = "s7"
@@ -55,15 +57,29 @@ class Replica:
             if self.config["REPLICA_DOMAIN"]
             else self.database_name
         )
-        self._replica = pymysql.connect(
-            host=repl_host,
-            db=self.database_p,
-            user=self.config["REPLICA_USER"],
-            passwd=self.config["REPLICA_PASSWORD"],
-            port=self.config["REPLICA_PORT"],
-            charset="utf8",
-            client_flag=pymysql.constants.CLIENT.MULTI_STATEMENTS,
-        )
+        connect_opts = {
+            "db": self.database_p,
+            "user": self.config["REPLICA_USER"],
+            "passwd": self.config["REPLICA_PASSWORD"],
+            "charset": "utf8",
+            "client_flag": pymysql.constants.CLIENT.MULTI_STATEMENTS,
+        }
+
+        if not self.config.get("REPLICA_SOCKS5_PROXY_HOST"):
+            self._replica = pymysql.connect(
+                host=repl_host, port=self.config["REPLICA_PORT"], **connect_opts
+            )
+        else:
+            self._replica = pymysql.connect(defer_connect=True, **connect_opts)
+
+            sock = socks.socksocket()
+            sock.set_proxy(
+                socks.SOCKS5,
+                addr=self.config["REPLICA_SOCKS5_PROXY_HOST"],
+                port=self.config["REPLICA_SOCKS5_PROXY_PORT"],
+            )
+            sock.connect((repl_host, self.config["REPLICA_PORT"]))
+            self._replica.connect(sock=sock)
 
     @connection.deleter
     def connection(self):
