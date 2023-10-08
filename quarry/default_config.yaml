@@ -30,8 +30,13 @@ worker_prefetch_multiplier: 1 # Tasks can run for a long time
 REPLICA_DOMAIN: ''  # Change to `analytics.db.svc.wikimedia.cloud` for live replicas
 REPLICA_USER: 'repl'  # For live replicas, your replica.my.cnf username
 REPLICA_PASSWORD: 'repl'  # For live replicas, your replica.my.cnf password
-
 REPLICA_PORT: 3306
+
+TOOLS_DB_HOST: 'tools.db.svc.wikimedia.cloud'
+TOOLS_DB_PORT: 3306
+TOOLS_DB_USER: ''
+TOOLS_DB_PASSWORD: ''
+
 OUTPUT_PATH_TEMPLATE: '/results/%s/%s/%s.sqlite'
 REDIS_HOST: 'redis'
 REDIS_PORT: 6379
