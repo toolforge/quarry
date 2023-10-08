@@ -38,6 +38,13 @@ class Replica:
                 else "{}_p".format(self.dbname)
             )
 
+    def get_host_name(self):
+        if self.is_tools_db:
+            return self.config["TOOLS_DB_HOST"]
+        if self.config["REPLICA_DOMAIN"]:
+            return f"{self.database_name}.{self.config['REPLICA_DOMAIN']}"
+        return self.database_name
+
     @property
     def connection(self):
         self._replica.ping(reconnect=True)
@@ -80,13 +87,6 @@ class Replica:
             )
             sock.connect((host, port))
             self._replica.connect(sock=sock)
-
-    def get_host_name(self):
-        if self.is_tools_db:
-            return self.config["TOOLS_DB_HOST"]
-        if self.config["REPLICA_DOMAIN"]:
-            return f"{self.database_name}.{self.config['REPLICA_DOMAIN']}"
-        return self.database_name
 
     @connection.deleter
     def connection(self):
