@@ -71,3 +71,12 @@ Bug: <ticket number>
 
 For example:
 Bug: T317566
+
+## git-crypt ##
+
+git-crypt is used to encrypt the config.yaml file. To decrypt ask a maintainer for the decryption key and:
+```
+git clone https://github.com/toolforge/quarry.git
+cd quarry
+git-crypt unlock <path to decryption key>
+```
