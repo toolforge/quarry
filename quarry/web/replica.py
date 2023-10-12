@@ -10,16 +10,18 @@ class Replica:
     def __init__(self, config):
         self.config = config
         self.dbname = ""
+        self.is_tools_db = False
 
     def _db_name_mangler(self):
         if self.dbname == "":
             raise ReplicaConnectionException(
                 "Attempting connection before a database is selected"
             )
-
-        if self.dbname == "meta" or self.dbname == "meta_p":
+        if "__" in self.dbname and self.dbname.endswith("_p"):
+            self.is_tools_db = True
+            self.database_p = self.dbname
+        elif self.dbname == "meta" or self.dbname == "meta_p":
             self.database_name = "s7"
-
             self.database_p = "meta_p"
         elif self.dbname == "centralauth" or self.dbname == "centralauth_p":
             self.database_name = "s7"
@@ -35,6 +37,13 @@ class Replica:
                 if self.dbname.endswith("_p")
                 else "{}_p".format(self.dbname)
             )
+
+    def get_host_name(self):
+        if self.is_tools_db:
+            return self.config["TOOLS_DB_HOST"]
+        if self.config["REPLICA_DOMAIN"]:
+            return f"{self.database_name}.{self.config['REPLICA_DOMAIN']}"
+        return self.database_name
 
     @property
     def connection(self):
@@ -52,22 +61,20 @@ class Replica:
 
         self.dbname = db
         self._db_name_mangler()
-        repl_host = (
-            f"{self.database_name}.{self.config['REPLICA_DOMAIN']}"
-            if self.config["REPLICA_DOMAIN"]
-            else self.database_name
-        )
+        host = self.get_host_name()
+        conf_prefix = "TOOLS_DB" if self.is_tools_db else "REPLICA"
+        port = self.config[f"{conf_prefix}_PORT"]
         connect_opts = {
             "db": self.database_p,
-            "user": self.config["REPLICA_USER"],
-            "passwd": self.config["REPLICA_PASSWORD"],
+            "user": self.config[f"{conf_prefix}_USER"],
+            "passwd": self.config[f"{conf_prefix}_PASSWORD"],
             "charset": "utf8",
             "client_flag": pymysql.constants.CLIENT.MULTI_STATEMENTS,
         }
 
         if not self.config.get("REPLICA_SOCKS5_PROXY_HOST"):
             self._replica = pymysql.connect(
-                host=repl_host, port=self.config["REPLICA_PORT"], **connect_opts
+                host=host, port=port, **connect_opts
             )
         else:
             self._replica = pymysql.connect(defer_connect=True, **connect_opts)
@@ -78,7 +85,7 @@ class Replica:
                 addr=self.config["REPLICA_SOCKS5_PROXY_HOST"],
                 port=self.config["REPLICA_SOCKS5_PROXY_PORT"],
             )
-            sock.connect((repl_host, self.config["REPLICA_PORT"]))
+            sock.connect((host, port))
             self._replica.connect(sock=sock)
 
     @connection.deleter
