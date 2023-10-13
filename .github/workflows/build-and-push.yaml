@@ -10,15 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-
-      - name: git fetch
-        run: |
-          git fetch
-      - name: git checkout
-        run: |
-          git checkout ${{ github.head_ref }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
