@@ -1,9 +1,9 @@
 Thank you for installing {{ .Chart.Name }}!
 
-An essential part of setting up your dev environment is adding a hosts file entry.
+An essential part of setting up your dev environment is adding an entry to your /etc/hosts file.
 Get the IP of minikube with:
 minikube ip
-Add this line to your hosts file:
+Add this line to your /etc/hosts file:
 <ip address> quarry.local
 
 You can override any values you need in a file called dev-values.yaml.
