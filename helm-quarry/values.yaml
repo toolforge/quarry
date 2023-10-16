@@ -1,9 +1,9 @@
 web:
-  repository: 'quarry' # replace with quay.io
-  pullPolicy: Never
-  tag: '01'
+  repository: 'quay.io/wikimedia-quarry/quarry'
+  pullPolicy: Always
+  tag: 'pr-28'
 
 worker:
-  repository: 'quarry' # replace with quay.io
-  pullPolicy: Never
-  tag: '01'
+  repository: 'quay.io/wikimedia-quarry/quarry'
+  pullPolicy: Always
+  tag: 'pr-28'
