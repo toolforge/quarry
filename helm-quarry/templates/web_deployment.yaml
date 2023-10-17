@@ -5,7 +5,7 @@ metadata:
   labels:
     app: web
 spec:
-  replicas: 1
+  replicas: {{ .Values.web.replicas }}
   selector:
     matchLabels:
       app: web
@@ -25,6 +25,10 @@ spec:
               name: results
             - name: config
               mountPath: /config/
+          resources:
+            requests:
+              memory: {{ .Values.web.memory }}
+              cpu: {{ .Values.web.cpu }}
       volumes:
         - name: results
           persistentVolumeClaim:
