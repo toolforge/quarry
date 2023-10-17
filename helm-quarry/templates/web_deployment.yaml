@@ -18,8 +18,8 @@ spec:
         - name: web
           image: {{ .Values.web.repository }}:{{ .Values.web.tag }}
           imagePullPolicy: Always
-          command: ["python"]
-          args: ["quarry.wsgi"]
+          command: ["gunicorn"]
+          args: ["-w", "2", "--bind", "0.0.0.0:5000", "wsgi:application"]
           volumeMounts:
             - mountPath: "/results"
               name: results
