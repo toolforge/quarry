@@ -17,11 +17,7 @@ spec:
       containers:
         - name: web
           image: {{ .Values.web.repository }}:{{ .Values.web.tag }}
-{{ if .Values.localdev.enabled }}
-          imagePullPolicy: Never
-{{ else }}
           imagePullPolicy: Always
-{{ end }}
           command: ["python"]
           args: ["quarry.wsgi"]
           volumeMounts:

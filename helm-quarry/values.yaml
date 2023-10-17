@@ -1,9 +1,7 @@
 web:
   repository: 'quay.io/wikimedia-quarry/quarry'
-  pullPolicy: Always
   tag: 'pr-28'
 
 worker:
   repository: 'quay.io/wikimedia-quarry/quarry'
-  pullPolicy: Always
   tag: 'pr-28'
