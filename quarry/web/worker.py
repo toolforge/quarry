@@ -22,16 +22,18 @@ __dir__ = os.path.dirname(__file__)
 celery_log = get_task_logger(__name__)
 
 celery = Celery("quarry.web.worker")
-try:
-    celery.conf.update(
-        yaml.safe_load(open(os.path.join(__dir__, "/config/config.yaml")))
-    )
-except IOError:
+
+if os.path.isfile("/config/config.yaml"):
+    # k8s
+    config_path = "/config/config.yaml"
+elif os.path.isfile("../config.yaml"):
+    # VM
+    config_path = "../config.yaml"
+else:
     # for pytest
-    celery.conf.update(
-        yaml.safe_load(open(os.path.join(__dir__, "../default_config.yaml")))
-    )
-    pass
+    config_path = "../default_config.yaml"
+
+celery.conf.update(yaml.safe_load(open(os.path.join(__dir__, config_path))))
 
 
 conn = None
