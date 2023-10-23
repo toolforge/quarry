@@ -30,7 +30,7 @@ services:
       - "redis"
 
   redis:
-    image: redis:alpine
+    image: redis:alpine3.18
 
   # wikireplica simulator
   mywiki:
