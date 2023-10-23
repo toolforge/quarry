@@ -24,7 +24,8 @@ spec:
             - mountPath: "/results"
               name: results
             - name: config
-              mountPath: /config/
+              mountPath: /app/quarry/config.yaml
+              subPath: config.yaml
           resources:
             requests:
               memory: {{ .Values.web.memory }}

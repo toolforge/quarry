@@ -6,17 +6,12 @@ import pymysql
 from connections import Connections
 
 __dir__ = os.path.dirname(__file__)
-if os.path.isfile("/config/config.yaml"):
-    # k8s
-    config_path = "/config/config.yaml"
-elif os.path.isfile("../config.yaml"):
-    # VM
-    config_path = "../config.yaml"
-else:
-    # test
-    config_path = "../default_config.yaml"
-
-config = yaml.safe_load(open(os.path.join(__dir__, config_path)))
+config = yaml.safe_load(open(os.path.join(__dir__, "../default_config.yaml")))
+try:
+    config.update(yaml.safe_load(open(os.path.join(__dir__, "../config.yaml"))))
+except IOError:
+    # is ok if we do not have config.yaml
+    pass
 
 logging.basicConfig(
     filename=config["KILLER_LOG_PATH"],

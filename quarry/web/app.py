@@ -24,14 +24,16 @@ __dir__ = os.path.dirname(__file__)
 
 def get_config():
     conf = {}
-    if os.path.isfile("/config/config.yaml"):
-        # k8s
-        config_path = "/config/config.yaml"
-    elif os.path.isfile("../config.yaml"):
-        # VM
-        config_path = "../config.yaml"
-
-    conf.update(yaml.safe_load(open(os.path.join(__dir__, config_path))))
+    conf.update(
+        yaml.safe_load(open(os.path.join(__dir__, "../default_config.yaml")))
+    )
+    try:
+        conf.update(
+            yaml.safe_load(open(os.path.join(__dir__, "../config.yaml")))
+        )
+    except IOError:
+        # Is ok if we can't load config.yaml
+        pass
 
     return conf
 
