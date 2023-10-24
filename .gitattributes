@@ -1,3 +1,5 @@
 # Directory entries are not enough to encrypt fines beneath it
 # https://github.com/AGWA/git-crypt#gitattributes-file
 quarry/config-prod.yaml filter=git-crypt diff=git-crypt
+terraform/secrets.tf filter=git-crypt diff=git-crypt
+helm-quarry/prod-config.yaml filter=git-crypt diff=git-crypt
