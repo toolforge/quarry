@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: web
+spec:
+  replicas: {{ .Values.web.replicas }}
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: {{ .Values.web.repository }}:{{ .Values.web.tag }}
+          imagePullPolicy: Always
+          command: ["gunicorn"]
+          args: ["-w", "2", "--bind", "0.0.0.0:5000", "wsgi:application"]
+          volumeMounts:
+            - mountPath: "/results"
+              name: results
+            - name: config
+              mountPath: /app/quarry/config.yaml
+              subPath: config.yaml
+          resources:
+            requests:
+              memory: {{ .Values.web.memory }}
+              cpu: {{ .Values.web.cpu }}
+      volumes:
+        - name: results
+          persistentVolumeClaim:
+            claimName: results
+        - name: config
+          configMap:
+            name: config

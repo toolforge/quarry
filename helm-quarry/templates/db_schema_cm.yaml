@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-schema
+data:
+  schema.sql: |-
+{{ .Files.Get "schema.sql" | indent 4}}

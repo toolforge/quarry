@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: web
+  name: web
+  namespace: quarry
+spec:
+  ports:
+  - name: web
+    port: 5000
+    nodePort: 32700
+    protocol: TCP
+    targetPort: 5000
+    #targetPort: http
+  selector:
+    app: web
+  type: NodePort

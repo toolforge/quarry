@@ -1,0 +1,7 @@
+web:
+  repository: 'quay.io/wikimedia-quarry/quarry'
+  tag: 'pr-28'
+
+worker:
+  repository: 'quay.io/wikimedia-quarry/quarry'
+  tag: 'pr-28'
