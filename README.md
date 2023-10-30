@@ -105,3 +105,9 @@ git clone https://github.com/toolforge/quarry.git
 cd quarry
 git-crypt unlock <path to decryption key>
 ```
+
+## Deploying to production ##
+From the quarry-bastion in the git checkout that has the state file.
+`bash deploy.sh`
+`mysql -uquarry -h <trove hostname created in last step> -p < schema.sql`
+In horizon point the web proxy at the new cluster.

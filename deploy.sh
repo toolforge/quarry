@@ -17,11 +17,17 @@ if ! command -v terraform ; then
   exit 1
 fi
 
+python3 -m venv .venv/deploy
+source .venv/deploy/bin/activate
+pip install ansible==8.1.0 kubernetes==26.1.0
+
 cd terraform
 terraform init
 terraform apply # -auto-approve
 export KUBECONFIG=$(pwd)/kube.config
 
-cd ../
-kubectl create namespace quarry --dry-run=client -o yaml | kubectl apply -f -
-helm -n quarry upgrade --install quarry helm-quarry -f helm-quarry/prod-env.yaml
+cd ../ansible
+ansible-playbook quarry.yaml
+#kubectl create namespace quarry --dry-run=client -o yaml | kubectl apply -f -
+#helm -n quarry upgrade --install quarry helm-quarry -f helm-quarry/prod-env.yaml
+

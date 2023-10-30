@@ -2,13 +2,14 @@ localdev:
   enabled: false
 
 web:
-  replicas: 8
+  replicas: 1
   memory: "300Mi"
   cpu: "100m"
 worker:
-  replicas: 2
+  replicas: 1
   memory: "700Mi"
   cpu: "100m"
 
 nfs:
+#  server: 172.16.4.142
   server: k8s-test-nfs.quarry.eqiad1.wikimedia.cloud
