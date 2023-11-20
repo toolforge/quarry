@@ -20,6 +20,12 @@ spec:
           imagePullPolicy: Always
           command: ["gunicorn"]
           args: ["-w", "2", "--bind", "0.0.0.0:5000", "wsgi:application"]
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /

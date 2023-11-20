@@ -2,11 +2,11 @@ localdev:
   enabled: false
 
 web:
-  replicas: 1
+  replicas: 8
   memory: "300Mi"
   cpu: "100m"
 worker:
-  replicas: 1
+  replicas: 2
   memory: "700Mi"
   cpu: "100m"
 
