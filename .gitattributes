@@ -3,4 +3,3 @@
 quarry/config-prod.yaml filter=git-crypt diff=git-crypt
 terraform/secrets.tf filter=git-crypt diff=git-crypt
 helm-quarry/prod-config.yaml filter=git-crypt diff=git-crypt
-ansible/files/csi-secret-cinderplugin.yaml.crypt filter=git-crypt diff=git-crypt

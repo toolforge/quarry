@@ -4,49 +4,6 @@
   gather_facts: false
   hosts: localhost
   tasks:
-    #- name: Temporary directory for cloud provider
-    #  ansible.builtin.tempfile:
-    #    state: directory
-    #    suffix: cloud-provider
-    #  register: cloud_dir
-    #  changed_when: False
-
-    #- name: Clone cloud-provider-openstack
-    #  ansible.builtin.git:
-    #    repo: https://github.com/kubernetes/cloud-provider-openstack.git
-    #    dest: "{{ cloud_dir.path }}"
-    #    version: v1.26.3
-    #  changed_when: False
-
-    #- name: Copy file with owner and permissions
-    #  ansible.builtin.copy:
-    #    src: files/csi-secret-cinderplugin.yaml.crypt
-    #    dest: "{{ cloud_dir.path }}/manifests/cinder-csi-plugin/csi-secret-cinderplugin.yaml"
-    #  changed_when: False
-
-    #- name: install the things!
-    #  kubernetes.core.k8s:
-    #    state: present
-    #    src: "{{ cloud_dir.path }}/manifests/cinder-csi-plugin/{{ item }}"
-    #  loop:
-    #    - "csi-secret-cinderplugin.yaml"
-    #    - "cinder-csi-controllerplugin-rbac.yaml"
-    #    - "cinder-csi-controllerplugin.yaml"
-    #    - "cinder-csi-nodeplugin-rbac.yaml"
-    #    - "cinder-csi-nodeplugin.yaml"
-    #    - "csi-cinder-driver.yaml"
-
-    #- name: Delete temporary directory
-    #  ansible.builtin.file:
-    #    state: absent
-    #    path: "{{ cloud_dir.path }}"
-    #  changed_when: False
-
-    #- name: and sc.yaml
-    #  kubernetes.core.k8s:
-    #    state: present
-    #    src: "files/sc.yaml"
-
     - name: Deploy quarry
       kubernetes.core.helm:
         name: quarry
