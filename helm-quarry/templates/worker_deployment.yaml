@@ -38,7 +38,7 @@ spec:
 {{ else }}
           nfs:
             server: {{ .Values.nfs.server }}
-            path: /srv/quarry/project/
+            path: /srv/quarry/project/quarry/results/
 {{ end }}
         - name: config
           configMap:
