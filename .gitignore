@@ -18,4 +18,4 @@ config.yaml
 .tool-versions
 terraform.tfstate*
 .terraform*
-terraform/kube.config
+tofu/kube.config
