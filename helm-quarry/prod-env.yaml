@@ -11,4 +11,4 @@ worker:
   cpu: "100m"
 
 nfs:
-  server: quarry-nfs-2.quarry.eqiad1.wikimedia.cloud
+  server: k8s-nfs.quarry.eqiad1.wikimedia.cloud
