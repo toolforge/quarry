@@ -1,7 +1,6 @@
-# probably replace with (import) active database before deploy
 resource "openstack_db_instance_v1" "mariadb" {
   region    = "eqiad1-r"
-  name      = "quarry-k8s-test"
+  name      = "quarry-k8s"
   flavor_id = "bb8bee7e-d8f9-460b-8344-74f745c139b9"
   size      = 10
 
@@ -25,4 +24,3 @@ resource "openstack_db_instance_v1" "mariadb" {
     type    = "mariadb"
   }
 }
-
