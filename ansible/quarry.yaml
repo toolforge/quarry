@@ -1,0 +1,14 @@
+---
+
+- name: Deploy quarry to k8s cluster
+  gather_facts: false
+  hosts: localhost
+  tasks:
+    - name: Deploy quarry
+      kubernetes.core.helm:
+        name: quarry
+        chart_ref: ../helm-quarry
+        release_namespace: "quarry"
+        create_namespace: true
+        values_files:
+          - ../helm-quarry/prod-env.yaml

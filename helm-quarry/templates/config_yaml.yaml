@@ -4,7 +4,7 @@ metadata:
   name: config
 data:
 {{ if .Values.localdev.enabled }}
-  config.yaml: {{ .Files.Get "dev_config.yaml" | quote }}
+  config.yaml: {{ .Files.Get "dev-config.yaml" | quote }}
 {{ else }}
-  config.yaml: {{ .Files.Get "prod_config.yaml" | quote }}
+  config.yaml: {{ .Files.Get "prod-config.yaml" | quote }}
 {{ end }}

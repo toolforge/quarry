@@ -1,3 +1,4 @@
+{{ if .Values.localdev.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,3 +35,4 @@ spec:
         - name: schema
           configMap:
             name: db-schema
+{{ end }}

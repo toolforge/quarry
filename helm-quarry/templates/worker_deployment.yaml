@@ -32,8 +32,14 @@ spec:
               cpu: {{ .Values.worker.cpu }}
       volumes:
         - name: results
+{{ if .Values.localdev.enabled }}
           persistentVolumeClaim:
             claimName: results
+{{ else }}
+          nfs:
+            server: {{ .Values.nfs.server }}
+            path: /srv/quarry/project/quarry/results/
+{{ end }}
         - name: config
           configMap:
             name: config
