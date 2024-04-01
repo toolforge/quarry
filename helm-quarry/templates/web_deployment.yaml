@@ -20,6 +20,19 @@ spec:
           imagePullPolicy: Always
           command: ["gunicorn"]
           args: ["-w", "2", "--bind", "0.0.0.0:5000", "wsgi:application"]
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 90
+            periodSeconds: 30
+            failureThreshold: 4
           volumeMounts:
             - mountPath: "/results"
               name: results
@@ -32,8 +45,14 @@ spec:
               cpu: {{ .Values.web.cpu }}
       volumes:
         - name: results
+{{ if .Values.localdev.enabled }}
           persistentVolumeClaim:
             claimName: results
+{{ else }}
+          nfs:
+            server: {{ .Values.nfs.server }}
+            path: /srv/quarry/project/quarry/results/
+{{ end }}
         - name: config
           configMap:
             name: config

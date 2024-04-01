@@ -16,3 +16,6 @@ config.yaml
 *.swp
 .vscode
 .tool-versions
+terraform.tfstate*
+.terraform*
+tofu/kube.config

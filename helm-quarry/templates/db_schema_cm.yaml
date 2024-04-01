@@ -1,3 +1,4 @@
+{{ if .Values.localdev.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -5,3 +6,4 @@ metadata:
 data:
   schema.sql: |-
 {{ .Files.Get "schema.sql" | indent 4}}
+{{ end }}

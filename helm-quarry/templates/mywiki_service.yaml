@@ -1,3 +1,4 @@
+{{ if .Values.localdev.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -9,3 +10,4 @@ spec:
   - name: mywiki
     port: 3306
     targetPort: 3306
+{{ end }}
