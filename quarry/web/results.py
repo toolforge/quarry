@@ -124,6 +124,11 @@ class SQLiteResultReader(object):
             qrun.rev.query.id,
             qrun.id,
         )
+        import sys
+
+        print("--------------------------------------------", file=sys.stderr)
+        print(path, file=sys.stderr)
+        print("--------------------------------------------", file=sys.stderr)
         self.db = sqlite3.connect(path)
         self.db.text_factory = str
 
