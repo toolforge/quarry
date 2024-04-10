@@ -174,35 +174,6 @@ class TestApi:
         assert result_dict["qrun_id"] == self.run_id
         self.db_session.assert_has_calls([mocker.call.query(Query)])
 
-    def test_stop_query(self, mocker):
-        response = self.client.post(
-            "/api/query/stop", data=dict(qrun_id=self.run_id, query_database="mywiki")
-        )
-        assert response.status_code == 200
-        result_dict = json.loads(response.data.decode("utf8"))
-        assert result_dict["stopped"]
-
-        mocker.patch("quarry.web.api.get_user", return_value=None)
-        response = self.client.post(
-            "/api/query/stop", data=dict(qrun_id=self.run_id, query_database="mywiki")
-        )
-        assert response.status_code == 401
-
-    def test_pref_get(self, mocker):
-        response = self.client.get("/api/preferences/get/breakfast")
-
-        assert response.status_code == 200
-        result_dict = json.loads(response.data.decode("utf8"))
-        print(result_dict)
-        assert result_dict["key"] == "breakfast"
-        assert result_dict["value"] == "waffles"
-
-        mocker.patch("quarry.web.api.get_user", return_value=None)
-        response = self.client.post(
-            "/api/query/stop", data=dict(qrun_id=self.run_id, query_database="mywiki")
-        )
-        assert response.status_code == 401
-
     def test_pref_set(self, mocker):
         response = self.client.get("/api/preferences/set/dinner/gumbo")
         assert response.status_code == 201

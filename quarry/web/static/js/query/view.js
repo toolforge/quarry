@@ -179,23 +179,6 @@ $( function () {
 		} );
 	} );
 
-	$( '#stop-code' ).click( function () {
-		// revert favicon to default color
-		var favicon = document.querySelector("link[rel='icon']");
-		favicon.href = '/static/img/favicon.png';
-
-		$.post( '/api/query/stop', {
-			query_database: $( '#query-db' ).val(),
-			qrun_id: vars.qrun_id
-		} )
-			.done( function () {
-				checkStatus( vars.qrun_id, false );
-			} )
-			.fail( function ( resp ) {
-				alert( resp.responseText );
-			} );
-	} );
-
 	$( '#run-code' ).click( function () {
 		// update favicon to running color
 		var favicon = document.querySelector("link[rel='icon']");

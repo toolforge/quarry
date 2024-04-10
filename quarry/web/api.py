@@ -1,6 +1,4 @@
-import ast
 import json
-from pymysql.err import OperationalError
 
 from flask import Blueprint, g, Response, request
 from typing import Tuple, Union
@@ -146,47 +144,6 @@ def api_run_query() -> Tuple[Union[str, Response], int]:
             json.dumps({"qrun_id": query_run.id}),
             mimetype="application/json",
         ),
-        200,
-    )
-
-
-@api_blueprint.route("/api/query/stop", methods=["POST"])
-def api_stop_query() -> Tuple[Union[str, Response], int]:
-    if get_user() is None:
-        return "Authentication required", 401
-
-    qrun_id = request.form["qrun_id"]
-    db_of_process = request.form["query_database"]
-
-    # the db process id of the running job is stored in the query_run table while
-    # the job is running. We can take this pid over to the database running the
-    # query to stop the job
-    query_run = (
-        g.conn.session.query(QueryRun).filter(QueryRun.id == qrun_id).one()
-    )
-    result_dictionary = ast.literal_eval(query_run.extra_info)
-    if "connection_id" in result_dictionary:
-        g.replica.connection = db_of_process
-        cur = g.replica.connection.cursor()
-        try:
-            cur.execute("KILL %s;", (result_dictionary["connection_id"]))
-            output = "job stopped"
-        except OperationalError:
-            output = "job not running"
-    else:
-        output = "job not running"
-
-    # Stopping the job usually gets a stopped status. However some jobs stopped
-    # before the stop button was pressed, and didn't update the DB to reflect
-    # this. Cleanup here. Should we make a feature that looks for jobs that have
-    # failed, but have not updated the DB to reflect as much, it may be
-    # reasonable to update this clause to match the state offered by a cleanup
-    # feature ("job lost" or some such)
-    query_run.status = QueryRun.STATUS_STOPPED
-    g.conn.session.add(query_run)
-    g.conn.session.commit()
-    return (
-        Response(json.dumps({"stopped": output}), mimetype="application/json"),
         200,
     )
 

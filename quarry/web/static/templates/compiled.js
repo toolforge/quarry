@@ -1,7 +1,7 @@
 (function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["query-resultset.html"] = (function() {
 function root(env, context, frame, runtime, cb) {
-var lineno = null;
-var colno = null;
+var lineno = 0;
+var colno = 0;
 var output = "";
 try {
 var parentTemplate = null;
@@ -21,14 +21,15 @@ output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "ro
 output += " rows)\n        </div>\n        <div class='col-md-4'>\n            <div class=\"btn-group pull-right\">\n                <button type=\"button\" class=\"btn btn-info btn-xs dropdown-toggle\" data-toggle=\"dropdown\">\n                    Download data <span class=\"caret\"></span>\n                </button>\n                <ul class=\"dropdown-menu\" role=\"menu\">\n                    ";
 frame = frame.push();
 var t_3 = {"tsv": "TSV","json": "JSON","json-lines": "JSON Lines","csv": "CSV","wikitable": "Wikitable","html": "HTML","xlsx": "Excel XLSX"};
-if(t_3) {var t_1;
+if(t_3) {t_3 = runtime.fromIterator(t_3);
+var t_1;
 if(runtime.isArray(t_3)) {
 var t_2 = t_3.length;
 for(t_1=0; t_1 < t_3.length; t_1++) {
-var t_4 = t_3[t_1][0]
-frame.set("format", t_3[t_1][0]);
-var t_5 = t_3[t_1][1]
-frame.set("formatname", t_3[t_1][1]);
+var t_4 = t_3[t_1][0];
+frame.set("[object Object]", t_3[t_1][0]);
+var t_5 = t_3[t_1][1];
+frame.set("[object Object]", t_3[t_1][1]);
 frame.set("loop.index", t_1 + 1);
 frame.set("loop.index0", t_1);
 frame.set("loop.revindex", t_2 - t_1);
@@ -111,8 +112,8 @@ root: root
 })();
 (function() {(window.nunjucksPrecompiled = window.nunjucksPrecompiled || {})["query-status.html"] = (function() {
 function root(env, context, frame, runtime, cb) {
-var lineno = null;
-var colno = null;
+var lineno = 0;
+var colno = 0;
 var output = "";
 try {
 var parentTemplate = null;
@@ -157,9 +158,9 @@ output += "\n";
 }
 output += "\n";
 if(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "extra")),"replag")) {
-output += "\n<div class=\"alert alert-warning\">\n  <h4 class=\"alert-heading\">Replication lag</h4>\n  <p class=\"mb-0\">The database on which this query was executed has a <a href=\"https://replag.toolforge.org/\">synchronization delay</a> with the wiki.\n      This can be caused by maintenance or incident on database, and should be resolved soon.<br>\n      The modifications that was made in last <b>";
+output += "\n<div class=\"alert alert-warning\">\n  <h4 class=\"alert-heading\">Replication lag</h4>\n  <p class=\"mb-0\">The database on which this query was executed has a <a href=\"https://replag.toolforge.org/\">synchronization delay</a> with the wiki.\n      This can be caused by maintenance or a database incident, and should be resolved soon.<br>\n      Modifications that were made in the last <b>";
 output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "extra")),"replag"), env.opts.autoescape);
-output += "</b> on the wiki are not taken into account in results bellow.<br>\n</div>\n";
+output += "</b> on the wiki are not taken into account in the results below.<br>\n</div>\n";
 ;
 }
 output += "\n";
