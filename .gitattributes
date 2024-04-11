@@ -3,3 +3,4 @@
 quarry/config-prod.yaml filter=git-crypt diff=git-crypt
 tofu/secrets.tf filter=git-crypt diff=git-crypt
 helm-quarry/prod-config.yaml filter=git-crypt diff=git-crypt
+secrets.sh filter=git-crypt diff=git-crypt

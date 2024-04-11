@@ -17,13 +17,15 @@ if ! command -v tofu; then
   exit 1
 fi
 
+source secrets.sh
+
 python3 -m venv .venv/deploy
 source .venv/deploy/bin/activate
 pip install ansible==8.1.0 kubernetes==26.1.0
 
 cd tofu
-tofu init
-tofu apply # -auto-approve
+AWS_ACCESS_KEY_ID=${ACCESS_KEY} AWS_SECRET_ACCESS_KEY=${SECRET_KEY} tofu init
+AWS_ACCESS_KEY_ID=${ACCESS_KEY} AWS_SECRET_ACCESS_KEY=${SECRET_KEY} tofu apply # -auto-approve
 export KUBECONFIG=$(pwd)/kube.config
 
 cd ../ansible
