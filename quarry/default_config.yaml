@@ -32,7 +32,7 @@ REPLICA_USER: 'repl'  # For live replicas, your replica.my.cnf username
 REPLICA_PASSWORD: 'repl'  # For live replicas, your replica.my.cnf password
 REPLICA_PORT: 3306
 
-TOOLS_DB_HOST: 'tools.db.svc.wikimedia.cloud'
+TOOLS_DB_HOST: 'tools-readonly.db.svc.wikimedia.cloud'
 TOOLS_DB_PORT: 3306
 TOOLS_DB_USER: ''
 TOOLS_DB_PASSWORD: ''
