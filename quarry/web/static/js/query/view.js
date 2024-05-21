@@ -263,7 +263,7 @@ $( function () {
 			/* separating this section from the above, similar, section as this has to
 			do with the status button where the above has to do with the status results.
 			They already diverge a little in purpose, could diverge more later */
-			if ( data.status === 'queued' || data.status === 'running' ) {
+			if ( data.status === 'running' ) {
 				document.getElementById( 'stop-code' ).style.visibility = 'visible';
 			} else {
 				document.getElementById( 'stop-code' ).style.visibility = 'hidden';
