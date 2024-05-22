@@ -152,7 +152,9 @@ def run_query(query_run_id):
         qrun.status = QueryRun.STATUS_FAILED
         conn.session.add(qrun)
         conn.session.commit()
-        celery_log.error("OperationalError for qrun:%s, error: %s", qrun.id, str(e))
+        celery_log.error(
+            "OperationalError for qrun:%s, error: %s", qrun.id, str(e)
+        )
     finally:
         conn.close_session()
         del repl.connection
