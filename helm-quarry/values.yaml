@@ -1,7 +1,7 @@
 web:
   repository: 'quay.io/wikimedia-quarry/quarry'
-  tag: pr-47 # web tag managed by github actions
+  tag: pr-48 # web tag managed by github actions
 
 worker:
   repository: 'quay.io/wikimedia-quarry/quarry'
-  tag: pr-47 # worker tag managed by github actions
+  tag: pr-48 # worker tag managed by github actions
