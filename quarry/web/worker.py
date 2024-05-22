@@ -148,6 +148,11 @@ def run_query(query_run_id):
             celery_log.info("Stopped run for qrun:%s", qrun.id)
         else:
             write_error(qrun, e.args[1])
+    except pymysql.err.OperationalError as e:
+        qrun.status = QueryRun.STATUS_FAILED
+        conn.session.add(qrun)
+        conn.session.commit()
+        celery_log.error("OperationalError for qrun:%s, error: %s", qrun.id, str(e))
     finally:
         conn.close_session()
         del repl.connection
