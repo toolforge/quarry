@@ -3,7 +3,7 @@
 name: Build and Push quarry image
 
 'on':
-  pull_request:
+  pull_request_target:
 
 jobs:
   build_and_push:
