@@ -1,6 +1,7 @@
 import json
 import os
 import timeit
+import traceback
 from datetime import timedelta
 
 from celery import Celery
@@ -148,12 +149,21 @@ def run_query(query_run_id):
             celery_log.info("Stopped run for qrun:%s", qrun.id)
         else:
             write_error(qrun, e.args[1])
-    except pymysql.err.OperationalError as e:
+    except Exception as e:
         qrun.status = QueryRun.STATUS_FAILED
+        qrun.extra_info = json.dumps({"error": e.args[1]})
         conn.session.add(qrun)
         conn.session.commit()
+        tb_str = "".join(
+            traceback.format_exception(
+                etype=type(e), value=e, tb=e.__traceback__
+            )
+        )
         celery_log.error(
-            "OperationalError for qrun:%s, error: %s", qrun.id, str(e)
+            "OperationalError for qrun:%s, error: %s, traceback: %s",
+            qrun.id,
+            str(e),
+            tb_str,
         )
     finally:
         conn.close_session()
