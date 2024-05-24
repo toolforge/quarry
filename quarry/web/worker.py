@@ -151,7 +151,7 @@ def run_query(query_run_id):
             write_error(qrun, e.args[1])
     except Exception as e:
         qrun.status = QueryRun.STATUS_FAILED
-        qrun.extra_info = json.dumps({"error": e.args[1]})
+        qrun.extra_info = json.dumps({"error": str(e)})
         conn.session.add(qrun)
         conn.session.commit()
         tb_str = "".join(
