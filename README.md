@@ -63,23 +63,6 @@ the containers with the new dependencies by running `docker-compose build` befor
 `docker-compose up` again.
 
 
-## Running tests ##
-
-1. Set up [Blubber](https://wikitech.wikimedia.org/wiki/Blubber) to run tests:
-https://wikitech.wikimedia.org/wiki/Blubber/Download
-```bash
-blubber() {
-  if [ $# -lt 2 ]; then
-    echo 'Usage: blubber config.yaml variant'
-    return 1
-  fi
-  curl -s -H 'content-type: application/yaml' --data-binary @"$1" https://blubberoid.wikimedia.org/v1/"$2"
-}
-```
-2. Run tests:
-`blubber .pipeline/blubber.yaml quarry-test | docker build --tag blubber-quarry:01 --file - . ; docker run blubber-quarry:01`
-
-
 ## Useful commands ##
 
 To pre-compile nunjucks templates:
