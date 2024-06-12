@@ -21,12 +21,15 @@ class Replica:
             self.is_tools_db = True
             self.database_p = self.dbname
         elif self.dbname == "meta" or self.dbname == "meta_p":
+            self.is_tools_db = False
             self.database_name = "s7"
             self.database_p = "meta_p"
         elif self.dbname == "centralauth" or self.dbname == "centralauth_p":
+            self.is_tools_db = False
             self.database_name = "s7"
             self.database_p = "centralauth_p"
         else:
+            self.is_tools_db = False
             self.database_name = (
                 self.dbname
                 if not self.dbname.endswith("_p")
