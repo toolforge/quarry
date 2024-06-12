@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import timeit
 import traceback
 from datetime import timedelta
@@ -151,19 +152,20 @@ def run_query(query_run_id):
             write_error(qrun, e.args[1])
     except Exception as e:
         qrun.status = QueryRun.STATUS_FAILED
-        qrun.extra_info = json.dumps({"error": str(e)})
+        qrun.extra_info = json.dumps({"error": repr(e)})
         conn.session.add(qrun)
         conn.session.commit()
-        tb_str = "".join(
-            traceback.format_exception(
-                etype=type(e), value=e, tb=e.__traceback__
-            )
-        )
+        if sys.version_info.minor == 7:
+            # Python 3.7, remove when upgrading
+            tb = traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+        else:
+            # Python 3.10+
+            tb = traceback.format_exception(e)
         celery_log.error(
             "OperationalError for qrun:%s, error: %s, traceback: %s",
             qrun.id,
             str(e),
-            tb_str,
+            "".join(tb),
         )
     finally:
         conn.close_session()
