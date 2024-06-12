@@ -8,6 +8,8 @@ DB_HOST: 'db'
 DB_NAME: 'quarry'
 DB_USER: 'quarry'
 DB_PASSWORD: 'quarry'
+
+# Celery config, https://docs.celeryq.dev/en/stable/userguide/configuration.html
 broker_url: 'redis://redis'
 result_backend: 'redis://redis'
 worker_concurrency: 24  # Since all tasks are IO bound
