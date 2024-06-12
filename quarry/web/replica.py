@@ -10,9 +10,9 @@ class Replica:
     def __init__(self, config):
         self.config = config
         self.dbname = ""
-        self.is_tools_db = False
 
     def _db_name_mangler(self):
+        self.is_tools_db = False
         if self.dbname == "":
             raise ReplicaConnectionException(
                 "Attempting connection before a database is selected"
@@ -21,15 +21,16 @@ class Replica:
             self.is_tools_db = True
             self.database_p = self.dbname
         elif self.dbname == "meta" or self.dbname == "meta_p":
-            self.is_tools_db = False
             self.database_name = "s7"
             self.database_p = "meta_p"
         elif self.dbname == "centralauth" or self.dbname == "centralauth_p":
-            self.is_tools_db = False
             self.database_name = "s7"
             self.database_p = "centralauth_p"
+        elif len(self.dbname) == 2:
+            # slice, eg. s1, s2
+            self.database_name = self.dbname
+            self.database_p = self.dbname
         else:
-            self.is_tools_db = False
             self.database_name = (
                 self.dbname
                 if not self.dbname.endswith("_p")

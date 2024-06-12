@@ -16,7 +16,6 @@ task_track_started: True
 worker_prefetch_multiplier: 1 # Tasks can run for a long time
 # Just query the quarry database itself.
 REPLICA_DOMAIN: ''
-REPLICA_HOST: 'mywiki'
 REPLICA_DB: 'mywiki_p'
 REPLICA_USER: 'repl'
 REPLICA_PASSWORD: 'repl'
