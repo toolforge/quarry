@@ -26,6 +26,10 @@ class Replica:
         elif self.dbname == "centralauth" or self.dbname == "centralauth_p":
             self.database_name = "s7"
             self.database_p = "centralauth_p"
+        elif len(self.dbname) == 2:
+            # slice, eg. s1, s2
+            self.database_name = self.dbname
+            self.database_p = self.dbname
         else:
             self.database_name = (
                 self.dbname
