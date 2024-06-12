@@ -90,7 +90,19 @@ git-crypt unlock <path to decryption key>
 ```
 
 ## Deploying to production ##
-From the quarry-bastion in the git checkout that has the state file.
+From the quarry-bastion:
+`git clone https://github.com/toolforge/quarry.git`
+`cd quarry`
+`git checkout <branch>` If not deploying main
+`git-crypt unlock <path to key>`
 `bash deploy.sh`
 `mysql -uquarry -h <trove hostname created in last step> -p < schema.sql`
 In horizon point the web proxy at the new cluster.
+
+### Fresh deploy ###
+For a completely fresh deploy, and nfs server will need to be setup. Add its hostname to helm-quarry/prod-env.yaml.
+And an object store will need to be generated for the tofu state file. Named "tofu-state"
+
+## troubleshooting ##
+If ansible doesn't detect a change for quarry helm the following can be run:
+`helm -n quarry upgrade --install quarry helm-quarry -f helm-quarry/prod-env.yaml`
