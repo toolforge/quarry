@@ -1,5 +1,4 @@
 import json
-import os
 import sys
 import timeit
 import traceback
@@ -9,8 +8,8 @@ from celery import Celery
 from celery.signals import worker_process_init, worker_process_shutdown
 from celery.utils.log import get_task_logger
 import pymysql
-import yaml
 
+from .config import get_config
 from .connections import Connections
 from .models.queryrun import QueryRun
 from .results import SQLiteResultWriter
@@ -19,21 +18,10 @@ from .utils import monkey as _unused  # noqa: F401
 from .webhelpers import get_pretty_delay
 
 
-__dir__ = os.path.dirname(__file__)
-
 celery_log = get_task_logger(__name__)
 
 celery = Celery("quarry.web.worker")
-celery.conf.update(
-    yaml.safe_load(open(os.path.join(__dir__, "../default_config.yaml")))
-)
-try:
-    celery.conf.update(
-        yaml.safe_load(open(os.path.join(__dir__, "../config.yaml")))
-    )
-except IOError:
-    # Is ok if we can not load config.yaml
-    pass
+celery.conf.update(get_config())
 
 conn = None
 

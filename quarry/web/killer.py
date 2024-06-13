@@ -1,17 +1,11 @@
 #!/usr/bin/env python
-import os
-import yaml
 import logging
 import pymysql
+
+from quarry.web.config import get_config
 from connections import Connections
 
-__dir__ = os.path.dirname(__file__)
-config = yaml.safe_load(open(os.path.join(__dir__, "../default_config.yaml")))
-try:
-    config.update(yaml.safe_load(open(os.path.join(__dir__, "../config.yaml"))))
-except IOError:
-    # is ok if we do not have config.yaml
-    pass
+config = get_config()
 
 logging.basicConfig(
     filename=config["KILLER_LOG_PATH"],
