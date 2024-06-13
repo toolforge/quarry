@@ -1,9 +1,7 @@
-import os
-
 from flask import current_app, Flask, render_template, g
 from flask_caching import Cache
-import yaml
 
+from .config import get_config
 from .connections import Connections
 from .replica import Replica
 from .login import auth
@@ -18,24 +16,6 @@ from .api import api_blueprint
 from .webhelpers import templatehelpers
 from .models.user import User
 from .models.queryrun import QueryRun
-
-__dir__ = os.path.dirname(__file__)
-
-
-def get_config():
-    conf = {}
-    conf.update(
-        yaml.safe_load(open(os.path.join(__dir__, "../default_config.yaml")))
-    )
-    try:
-        conf.update(
-            yaml.safe_load(open(os.path.join(__dir__, "../config.yaml")))
-        )
-    except IOError:
-        # Is ok if we can't load config.yaml
-        pass
-
-    return conf
 
 
 def setup_context():
