@@ -180,9 +180,7 @@ $( function () {
 	} );
 
 	$( '#stop-code' ).click( function () {
-		// revert favicon to default color
-		var favicon = document.querySelector("link[rel='icon']");
-		favicon.href = '/static/img/favicon.png';
+		updateFavicon( 'default' );
 
 		$.post( '/api/query/stop', {
 			query_database: $( '#query-db' ).val(),
@@ -197,9 +195,7 @@ $( function () {
 	} );
 
 	$( '#run-code' ).click( function () {
-		// update favicon to running color
-		var favicon = document.querySelector("link[rel='icon']");
-		favicon.href = '/static/img/favicon-running.png';
+		updateFavicon( 'running' );
 
 		$.post( '/api/query/run', {
 			text: editor !== null ? editor.getValue() : $( '#code' ).val(),
@@ -251,13 +247,12 @@ $( function () {
 					sendNotification( title + ' execution has been completed' );
 				}
 
-				// revert favicon to default color
-				var favicon = document.querySelector("link[rel='icon']");
-				favicon.href = '/static/img/favicon.png';
+				updateFavicon( 'default' );
 			} else if ( data.status === 'queued' || data.status === 'running' ) {
 				window.lastStatusCheck = setTimeout( function () {
 					checkStatus( qrun_id, false );
 				}, 5000 );
+				updateFavicon( 'running' );
 			}
 
 			/* separating this section from the above, similar, section as this has to
@@ -361,6 +356,15 @@ $( function () {
 		} else {
 			console.log( 'Can\'t send notification, permission value is set to ' + Notification.permission );
 			$.get( '/api/preferences/set/use_notifications/null' );
+		}
+	}
+
+	function updateFavicon( state ) {
+		var favicon = document.querySelector("link[rel='icon']");
+		if ( state === 'running' ) {
+			favicon.href = '/static/img/favicon-running.png';
+		} else {
+			favicon.href = '/static/img/favicon.png';
 		}
 	}
 
