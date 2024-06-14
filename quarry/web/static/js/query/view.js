@@ -14,7 +14,8 @@ $( function () {
 			mode: 'text/x-mariadb',
 			theme: 'monokai',
 			readOnly: !vars.can_edit,
-			matchBrackets: true
+			matchBrackets: true,
+			lineNumbers: true
 		} );
 	}
 
