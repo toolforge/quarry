@@ -187,13 +187,9 @@ def output_query_meta(query_id):
     )
 
 
-# mdipietro 2021/08/04 couldn't get the connection to work here
-# very possibly just not understanding it. Though a:
-# g.replica.connection = <db>
-# line might help if indeed it isn't working
-# noted in T288170
-@query_blueprint.route("/explain/<int:connection_id>")
-def output_explain(connection_id):
+@query_blueprint.route("/explain/<string:db_name>/<int:connection_id>")
+def output_explain(db_name, connection_id):
+    g.replica.connection = db_name
     cur = g.replica.connection.cursor()
     try:
         cur.execute("SHOW EXPLAIN FOR %d;" % connection_id)

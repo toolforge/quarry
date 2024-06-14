@@ -9,9 +9,9 @@ This query is waiting to be executed
 This query was stopped
 {% elif status == 'running' %}
 This query is currently executing...
-{% if extra.connection_id %}
-<!--<button id="show-explain" type="button" class="btn btn-default btn-xs">Explain</button>-->
 {% endif %}
+{% if extra.connection_id %}
+<button id="show-explain" type="button" class="btn btn-default btn-xs">Explain</button>
 {% endif %}
 {% if extra.replag %}
 <div class="alert alert-warning">

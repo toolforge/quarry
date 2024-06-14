@@ -264,7 +264,7 @@ $( function () {
 				document.getElementById( 'stop-code' ).style.visibility = 'hidden';
 			}
 			$( '#show-explain' ).off().click( function () {
-				$.get( '/explain/' + data.extra.connection_id ).done( function ( data ) {
+				$.get( '/explain/' + $( '#query-db' ).val() + '/' + data.extra.connection_id ).done( function ( data ) {
 					var $table = $( '#explain-results-table' );
 					if ( !$table.length ) {
 						$table = $( '<table>' ).attr( {
