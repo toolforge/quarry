@@ -16,7 +16,7 @@
 <script src="/static/js/query/view.js?v=2"> </script>
 {% endblock %}
 {% block title %}
-{% if query.title %}{{query.title}}{% else %}Untitled query #{{ query.id }}{% endif %} - Quarry
+{{query.title}} - Quarry
 {% endblock %}
 {% block content %}
 <div id="content" class="container {% if jsvars.can_edit %}edit{% else %}no-edit{% endif %} {% if jsvars.is_starred %}starred{% endif %} {% if query.published %}published {% endif %}">
@@ -24,7 +24,7 @@
 
 
         <div class="col-md-10">
-            <h2><input type="textbox" id="title" {% if jsvars.can_edit %}placeholder="Click to add title..."{% else %}readonly{% endif %} value="{% if query.title %}{{query.title}}{% endif %}"> </input></h2>
+            <h2><input type="textbox" id="title" value="{% if query.title %}{{query.title}}{% endif %}"> </input></h2>
         </div>
 
         <div class="col-md-2" id="title-actions-container">
@@ -50,11 +50,7 @@
             <small>
             Fork of
             <a href='/query/{{query.parent.id}}'>
-                {% if query.parent.title %}
                 {{ query.parent.title }}
-                {% else %}
-                Untitled query #{{ query.parent.id }}
-                {% endif %}
             </a>
             by <a href='/{{ query.parent.user.username }}'>{{ query.parent.user.username }}</a>
         </small>
