@@ -5,6 +5,7 @@ OAUTH_SECRET_TOKEN: "83ed4ac72176286f5c7798459f0a6b16a96853c4"
 SECRET_KEY: 'aaarggghhpleaserescuemeiamstuckinarandomnumbergeneratorfactory'
 DEBUG: True
 DB_HOST: 'db'
+DB_PORT: 3306
 DB_NAME: 'quarry'
 DB_USER: 'quarry'
 DB_PASSWORD: 'quarry'
