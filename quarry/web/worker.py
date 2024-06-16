@@ -23,7 +23,7 @@ celery_log = get_task_logger(__name__)
 celery = Celery("quarry.web.worker")
 celery.conf.update(get_config())
 
-conn = None
+conn: Connections = None
 
 
 def get_replag(cur):
@@ -56,7 +56,7 @@ def run_query(query_run_id):
     cur = False
     try:
         celery_log.info("Starting run for qrun:%s", query_run_id)
-        qrun = (
+        qrun: QueryRun = (
             conn.session.query(QueryRun)
             .filter(QueryRun.id == query_run_id)
             .one()
@@ -150,7 +150,7 @@ def run_query(query_run_id):
             # Python 3.10+
             tb = traceback.format_exception(e)
         celery_log.error(
-            "OperationalError for qrun:%s, error: %s, traceback: %s",
+            "Exception for qrun:%s, error: %s, traceback: %s",
             qrun.id,
             str(e),
             "".join(tb),
@@ -172,7 +172,7 @@ def run_query(query_run_id):
                     raise
 
 
-def write_error(qrun, error):
+def write_error(qrun: QueryRun, error: str):
     qrun.status = QueryRun.STATUS_FAILED
     qrun.extra_info = json.dumps({"error": error})
     conn.session.add(qrun)

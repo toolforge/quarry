@@ -1,10 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Blueprint
 
 templatehelpers = Blueprint("templatehelpers", __name__)
 
 
-def get_pretty_delay(diff, suffix="", default="just now"):
+def get_pretty_delay(diff: timedelta, suffix="", default="just now"):
     """
     Returns string representing "time since" e.g.
     3 days ago, 5 hours ago etc.
