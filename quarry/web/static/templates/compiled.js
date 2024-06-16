@@ -140,19 +140,19 @@ output += "\nThis query was stopped\n";
 else {
 if(runtime.contextOrFrameLookup(context, frame, "status") == "running") {
 output += "\nThis query is currently executing...\n";
-;
-}
-;
-}
-;
-}
-;
-}
+if(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "extra")),"connection_id")) {
+output += "\n<button id=\"show-explain\" type=\"button\" class=\"btn btn-default btn-xs\">Explain</button>\n";
 ;
 }
 output += "\n";
-if(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "extra")),"connection_id")) {
-output += "\n<button id=\"show-explain\" type=\"button\" class=\"btn btn-default btn-xs\">Explain</button>\n";
+;
+}
+;
+}
+;
+}
+;
+}
 ;
 }
 output += "\n";
