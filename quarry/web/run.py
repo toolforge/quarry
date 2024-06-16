@@ -12,7 +12,7 @@ run_blueprint = Blueprint("run", __name__)
 
 @run_blueprint.route("/run/<int:qrun_id>/status")
 def run_status(qrun_id):
-    qrun = g.conn.session.query(QueryRun).get(qrun_id)
+    qrun: QueryRun = g.conn.session.query(QueryRun).get(qrun_id)
     if not qrun:
         return Response("No such query_run id", status=404)
     return Response(
@@ -32,7 +32,7 @@ def run_status(qrun_id):
     "/run/<int:qrun_id>/output/<int:resultset_id>/<string:format>"
 )
 def output_result(qrun_id, resultset_id=0, format="json"):
-    qrun = g.conn.session.query(QueryRun).get(qrun_id)
+    qrun: QueryRun = g.conn.session.query(QueryRun).get(qrun_id)
     if not qrun:
         response = Response("No such query_run id", status=404)
     else:
@@ -54,7 +54,7 @@ def output_result(qrun_id, resultset_id=0, format="json"):
 
 @run_blueprint.route("/run/<int:qrun_id>/meta")
 def output_run_meta(qrun_id):
-    qrun = g.conn.session.query(QueryRun).get(qrun_id)
+    qrun: QueryRun = g.conn.session.query(QueryRun).get(qrun_id)
     if not qrun:
         return Response("No such query run id", status=404)
     return Response(
