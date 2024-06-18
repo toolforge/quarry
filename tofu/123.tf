@@ -19,10 +19,10 @@ resource "openstack_containerinfra_clustertemplate_v1" "template_123_2" {
   external_network_id   = "wan-transport-eqiad"
   fixed_subnet          = "cloud-instances2-b-eqiad"
   fixed_network         = "lan-flat-cloudinstances2b"
-  flavor                = "g3.cores4.ram8.disk20"
+  flavor                = "g4.cores4.ram8.disk20"
   floating_ip_enabled   = "false"
   image                 = "Fedora-CoreOS-38"
-  master_flavor         = "g3.cores2.ram4.disk20"
+  master_flavor         = "g4.cores2.ram4.disk20"
   network_driver        = "flannel"
 
   labels = {
