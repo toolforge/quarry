@@ -19,3 +19,4 @@ config.yaml
 terraform.tfstate*
 .terraform*
 tofu/kube.config
+ansible/collections/*
