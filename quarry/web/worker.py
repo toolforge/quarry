@@ -27,8 +27,13 @@ conn: Connections = None
 
 
 def get_replag(cur):
-    cur.execute("SELECT lag FROM heartbeat_p.heartbeat;")
-    return int(cur.fetchall()[0][0])
+    cur.execute("SELECT * FROM information_schema.tables WHERE table_schema='heartbeat_p' and table_name='heartbeat';")
+    if cur.rowcount:
+        cur.execute("SELECT lag FROM heartbeat_p.heartbeat;")
+        return int(cur.fetchall()[0][0])
+    else:
+        # there is not a heartbeat table on this database
+        return 0
 
 
 @worker_process_init.connect

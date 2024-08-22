@@ -59,3 +59,9 @@ CREATE TABLE IF NOT EXISTS star(
 CREATE INDEX IF NOT EXISTS star_user_id_index ON star(user_id);
 CREATE INDEX IF NOT EXISTS star_query_id_index ON star(query_id);
 CREATE UNIQUE INDEX IF NOT EXISTS star_user_query_index ON star(user_id, query_id);
+
+CREATE DATABASE IF NOT EXISTS quarry_p CHARACTER SET utf8;
+CREATE VIEW IF NOT EXISTS quarry_p.query AS SELECT * FROM quarry.query;
+CREATE VIEW IF NOT EXISTS quarry_p.query_revision AS SELECT * FROM quarry.query_revision;
+CREATE VIEW IF NOT EXISTS quarry_p.query_run AS SELECT * FROM quarry.query_run;
+CREATE VIEW IF NOT EXISTS quarry_p.star AS SELECT * FROM quarry.star;

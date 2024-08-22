@@ -13,6 +13,7 @@ class Replica:
 
     def _db_name_mangler(self):
         self.is_tools_db = False
+        self.is_quarry_p = False
         if self.dbname == "":
             raise ReplicaConnectionException(
                 "Attempting connection before a database is selected"
@@ -20,6 +21,9 @@ class Replica:
         if "__" in self.dbname and self.dbname.endswith("_p"):
             self.is_tools_db = True
             self.database_p = self.dbname
+        elif self.dbname == "quarry" or self.dbname == "quarry_p":
+            self.is_quarry_p = True
+            self.database_p = "quarry_p"
         elif self.dbname == "meta" or self.dbname == "meta_p":
             self.database_name = "s7"
             self.database_p = "meta_p"
@@ -41,6 +45,8 @@ class Replica:
     def get_host_name(self):
         if self.is_tools_db:
             return self.config["TOOLS_DB_HOST"]
+        if self.is_quarry_p:
+            return self.config["DB_HOST"]
         if self.config["REPLICA_DOMAIN"]:
             return f"{self.database_name}.{self.config['REPLICA_DOMAIN']}"
         return self.database_name
@@ -62,7 +68,12 @@ class Replica:
         self.dbname = db
         self._db_name_mangler()
         host = self.get_host_name()
-        conf_prefix = "TOOLS_DB" if self.is_tools_db else "REPLICA"
+        if self.is_tools_db:
+            conf_prefix = "TOOLS_DB"
+        elif self.is_quarry_p:
+            conf_prefix = "QUARRY_P"
+        else:
+            conf_prefix = "REPLICA"
         port = self.config[f"{conf_prefix}_PORT"]
         connect_opts = {
             "db": self.database_p,
