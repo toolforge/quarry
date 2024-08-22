@@ -109,6 +109,10 @@ you have to be careful because if you deploy a branch that is stale, you might
 undo some recent changes deployed by somebody else.
 
 * Make sure your PR is not stale:
+* Github should note that the PR has updates or conflicts and offer to fix them.
+* Alternatively:
+  * `git checkout main`
+  * `git pull`
   * `git checkout <branch>`
   * `git fetch`
   * `git rebase origin/main`
