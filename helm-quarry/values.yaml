@@ -1,6 +1,5 @@
 web:
   repository: 'quay.io/wikimedia-quarry/quarry'
-
   tag: pr-66 # web tag managed by github actions
 
 worker:
