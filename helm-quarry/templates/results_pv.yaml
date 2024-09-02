@@ -1,0 +1,14 @@
+{{ if .Values.localdev.enabled }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: results
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/results"
+{{ end }}

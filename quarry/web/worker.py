@@ -1,37 +1,39 @@
 import json
-import os
+import sys
 import timeit
+import traceback
+from datetime import timedelta
 
 from celery import Celery
 from celery.signals import worker_process_init, worker_process_shutdown
 from celery.utils.log import get_task_logger
 import pymysql
-import yaml
 
+from .config import get_config
 from .connections import Connections
 from .models.queryrun import QueryRun
 from .results import SQLiteResultWriter
 from .replica import Replica
 from .utils import monkey as _unused  # noqa: F401
+from .webhelpers import get_pretty_delay
 
-
-__dir__ = os.path.dirname(__file__)
 
 celery_log = get_task_logger(__name__)
 
 celery = Celery("quarry.web.worker")
-celery.conf.update(
-    yaml.safe_load(open(os.path.join(__dir__, "../default_config.yaml")))
-)
-try:
-    celery.conf.update(
-        yaml.safe_load(open(os.path.join(__dir__, "../config.yaml")))
-    )
-except IOError:
-    # Is ok if we can not load config.yaml
-    pass
+celery.conf.update(get_config())
 
-conn = None
+conn: Connections = None
+
+
+def get_replag(cur):
+    cur.execute("SELECT * FROM information_schema.tables WHERE table_schema='heartbeat_p' and table_name='heartbeat';")
+    if cur.rowcount:
+        cur.execute("SELECT lag FROM heartbeat_p.heartbeat;")
+        return int(cur.fetchall()[0][0])
+    else:
+        # there is not a heartbeat table on this database
+        return 0
 
 
 @worker_process_init.connect
@@ -59,7 +61,7 @@ def run_query(query_run_id):
     cur = False
     try:
         celery_log.info("Starting run for qrun:%s", query_run_id)
-        qrun = (
+        qrun: QueryRun = (
             conn.session.query(QueryRun)
             .filter(QueryRun.id == query_run_id)
             .one()
@@ -107,12 +109,16 @@ def run_query(query_run_id):
         output.close()
         stoptime = timeit.default_timer()
         qrun.status = QueryRun.STATUS_COMPLETE
-        qrun.extra_info = json.dumps(
-            {
-                "resultsets": output.get_resultsets(),
-                "runningtime": "%.2f" % (stoptime - starttime),
-            }
-        )
+        extra_info = {
+            "resultsets": output.get_resultsets(),
+            "runningtime": "%.2f" % (stoptime - starttime),
+        }
+        # Add replica lag if it's above threshold, to be displayed to user
+        replag = get_replag(cur)
+        if replag > 180:  # 3 minutes
+            extra_info["replag"] = get_pretty_delay(timedelta(seconds=replag))
+        qrun.extra_info = json.dumps(extra_info)
+
         celery_log.info("Completed run for qrun:%s successfully", qrun.id)
         conn.session.add(qrun)
         conn.session.commit()
@@ -137,6 +143,23 @@ def run_query(query_run_id):
             celery_log.info("Stopped run for qrun:%s", qrun.id)
         else:
             write_error(qrun, e.args[1])
+    except Exception as e:
+        qrun.status = QueryRun.STATUS_FAILED
+        qrun.extra_info = json.dumps({"error": repr(e)})
+        conn.session.add(qrun)
+        conn.session.commit()
+        if sys.version_info.minor == 7:
+            # Python 3.7, remove when upgrading
+            tb = traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+        else:
+            # Python 3.10+
+            tb = traceback.format_exception(e)
+        celery_log.error(
+            "Exception for qrun:%s, error: %s, traceback: %s",
+            qrun.id,
+            str(e),
+            "".join(tb),
+        )
     finally:
         conn.close_session()
         del repl.connection
@@ -154,7 +177,7 @@ def run_query(query_run_id):
                     raise
 
 
-def write_error(qrun, error):
+def write_error(qrun: QueryRun, error: str):
     qrun.status = QueryRun.STATUS_FAILED
     qrun.extra_info = json.dumps({"error": error})
     conn.session.add(qrun)

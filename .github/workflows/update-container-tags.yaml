@@ -1,0 +1,45 @@
+---
+
+name: update container tags
+
+'on':
+  pull_request_target:
+
+jobs:
+  update-container-tags:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      - name: git fetch
+        run: |
+          git fetch
+      - name: git checkout
+        run: |
+          git checkout ${{ github.head_ref }}
+
+      # compare  to upstream main branch
+      - name: git add remote
+        run: |
+          git remote add quarry https://github.com/toolforge/quarry.git
+      - name: git remote update
+        run: |
+          git remote update
+
+      - name: update values.yaml
+        run: |
+          for i in web worker ; do
+            sed -i "s/tag: .* # ${i} tag managed by github actions$/tag: pr-${{ github.event.number }} # ${i} tag managed by github actions/" helm-quarry/values.yaml
+          done
+
+      - uses: EndBug/add-and-commit@v7
+        with:
+          add: 'helm-quarry/values.yaml'
+          author_name: Github Action
+          author_email: auto@github.com
+          branch: ${{ github.head_ref }}
+          message: 'auto update of ${{ inputs.imagename }} tag'
+          pull: --rebase --autostash

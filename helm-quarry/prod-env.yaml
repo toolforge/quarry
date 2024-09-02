@@ -1,0 +1,14 @@
+localdev:
+  enabled: false
+
+web:
+  replicas: 8
+  memory: "300Mi"
+  cpu: "100m"
+worker:
+  replicas: 2
+  memory: "700Mi"
+  cpu: "100m"
+
+nfs:
+  server: k8s-nfs.quarry.eqiad1.wikimedia.cloud

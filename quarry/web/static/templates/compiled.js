@@ -141,7 +141,7 @@ else {
 if(runtime.contextOrFrameLookup(context, frame, "status") == "running") {
 output += "\nThis query is currently executing...\n";
 if(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "extra")),"connection_id")) {
-output += "\n<!--<button id=\"show-explain\" type=\"button\" class=\"btn btn-default btn-xs\">Explain</button>-->\n";
+output += "\n<button id=\"show-explain\" type=\"button\" class=\"btn btn-default btn-xs\">Explain</button>\n";
 ;
 }
 output += "\n";
@@ -153,6 +153,13 @@ output += "\n";
 }
 ;
 }
+;
+}
+output += "\n";
+if(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "extra")),"replag")) {
+output += "\n<div class=\"alert alert-warning\">\n  <h4 class=\"alert-heading\">Replication lag</h4>\n  <p class=\"mb-0\">The database on which this query was executed has a <a href=\"https://replag.toolforge.org/\">synchronization delay</a> with the wiki.\n      This can be caused by maintenance or a database incident, and should be resolved soon.<br>\n      Modifications that were made in the last <b>";
+output += runtime.suppressValue(runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, "extra")),"replag"), env.opts.autoescape);
+output += "</b> on the wiki are not taken into account in the results below.<br>\n</div>\n";
 ;
 }
 output += "\n";

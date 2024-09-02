@@ -1,0 +1,38 @@
+{{ if .Values.localdev.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  labels:
+    app: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - name: db
+          image: mariadb:10.1.48-bionic
+          imagePullPolicy: Always
+          env:
+          - name: MYSQL_USER
+            value: "quarry"
+          - name: MYSQL_PASSWORD
+            value: "quarry"
+          - name: MYSQL_DATABASE
+            value: "quarry"
+          - name: MYSQL_RANDOM_ROOT_PASSWORD
+            value: "1"
+          volumeMounts:
+          - name: schema
+            mountPath: /docker-entrypoint-initdb.d/
+      volumes:
+        - name: schema
+          configMap:
+            name: db-schema
+{{ end }}

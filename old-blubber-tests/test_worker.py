@@ -19,7 +19,7 @@ class Cursor:
         self.nextsetcalled = False
 
     def fetchall(self):
-        return [["a", "b", "c"], ["1", "2", "3"]]
+        return [[1, "b", "c"], ["1", "2", "3"]]
 
     def fetchmany(self, _count):
         if not self.called:

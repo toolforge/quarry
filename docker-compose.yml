@@ -4,6 +4,9 @@ services:
 
   web:
     build: .
+    # To mimic a production runtime, uncomment:
+    # entrypoint: ["gunicorn", "-w", "2", "--bind", "0.0.0.0:5000", "wsgi:application"]
+    entrypoint: ["python", "wsgi.py"]
     volumes:
       - .:/app
       - results:/results
@@ -20,12 +23,14 @@ services:
       - .:/app
       - results:/results
     entrypoint: ["celery", "--app", "quarry.web.worker", "worker", ]
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
     depends_on:
       - "db"
       - "redis"
 
   redis:
-    image: redis:alpine
+    image: redis:alpine3.18
 
   # wikireplica simulator
   mywiki:

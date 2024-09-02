@@ -1,0 +1,11 @@
+{{ if .Values.localdev.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: results
+spec:
+  accessModes: [ReadWriteMany]
+  resources:
+    requests:
+      storage: 1Gi
+{{ end }}

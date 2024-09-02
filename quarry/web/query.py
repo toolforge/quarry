@@ -134,6 +134,16 @@ def query_runs_all():
         )
     else:
         session["recent_queries_link"] = url_for("query.query_runs_all")
+    # Handle search parameters
+    args = request.args
+    search_term = args.get("search_term")
+    search_parameter = ""
+    if search_term is not None:
+        search_parameter = f"search_term={search_term}"
+        queries = queries.filter(
+            Query.title.ilike(f"%{search_term}%")
+            | Query.description.ilike(f"%{search_term}%")
+        )
     limit = int(
         request.args.get(
             "limit", current_app.config.get("QUERY_RESULTS_PER_PAGE", 50)
@@ -153,6 +163,8 @@ def query_runs_all():
         queries=queries,
         prev_link=prev_link,
         next_link=next_link,
+        search_parameter=search_parameter,
+        search_term=search_term,
         queries_filter=queries_filter,
     )
 
@@ -176,13 +188,9 @@ def output_query_meta(query_id):
     )
 
 
-# mdipietro 2021/08/04 couldn't get the connection to work here
-# very possibly just not understanding it. Though a:
-# g.replica.connection = <db>
-# line might help if indeed it isn't working
-# noted in T288170
-@query_blueprint.route("/explain/<int:connection_id>")
-def output_explain(connection_id):
+@query_blueprint.route("/explain/<string:db_name>/<int:connection_id>")
+def output_explain(db_name, connection_id):
+    g.replica.connection = db_name
     cur = g.replica.connection.cursor()
     try:
         cur.execute("SHOW EXPLAIN FOR %d;" % connection_id)

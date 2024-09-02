@@ -14,3 +14,9 @@ config.yaml
 .python-version
 .tox/
 *.swp
+.vscode
+.tool-versions
+terraform.tfstate*
+.terraform*
+tofu/kube.config
+ansible/collections/*

@@ -1,0 +1,14 @@
+Thank you for installing {{ .Chart.Name }}!
+
+An essential part of setting up your dev environment is adding an entry to your /etc/hosts file.
+Get the IP of minikube with:
+minikube ip
+Add this line to your /etc/hosts file:
+<ip address> quarry.local
+
+You can override any values you need in a file called dev-values.yaml.
+
+If you create one, run:
+helm -n {{ .Release.Namespace }} upgrade {{ .Release.Name }} helm-quarry/ -f dev-values.yaml
+Happy hacking.
+

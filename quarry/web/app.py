@@ -1,8 +1,7 @@
-import os
-
 from flask import current_app, Flask, render_template, g
-import yaml
+from flask_caching import Cache
 
+from .config import get_config
 from .connections import Connections
 from .replica import Replica
 from .login import auth
@@ -15,24 +14,8 @@ from .query import query_blueprint
 from .run import run_blueprint
 from .api import api_blueprint
 from .webhelpers import templatehelpers
-
-__dir__ = os.path.dirname(__file__)
-
-
-def get_config():
-    conf = {}
-    conf.update(
-        yaml.safe_load(open(os.path.join(__dir__, "../default_config.yaml")))
-    )
-    try:
-        conf.update(
-            yaml.safe_load(open(os.path.join(__dir__, "../config.yaml")))
-        )
-    except IOError:
-        # Is ok if we can't load config.yaml
-        pass
-
-    return conf
+from .models.user import User
+from .models.queryrun import QueryRun
 
 
 def setup_context():
@@ -41,7 +24,8 @@ def setup_context():
 
 
 def kill_context(exception=None):
-    g.conn.close_all()
+    if g.conn:
+        g.conn.close_all()
     del g.replica.connection
 
 
@@ -68,10 +52,16 @@ def create_app(test_config=None):
     app.teardown_request(kill_context)
 
     metrics_init_app(app)
+    cache = Cache(app)  # noqa: F841, this var is used in landing.html template
 
     @app.route("/")
     def index():
-        return render_template("landing.html", user=get_user())
+        return render_template(
+            "landing.html",
+            user=get_user(),
+            stats_count_users=global_conn.session.query(User).count(),
+            stats_count_runs=global_conn.session.query(QueryRun).count(),
+        )
 
     return app
 

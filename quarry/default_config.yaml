@@ -5,22 +5,46 @@ OAUTH_SECRET_TOKEN: "83ed4ac72176286f5c7798459f0a6b16a96853c4"
 SECRET_KEY: 'aaarggghhpleaserescuemeiamstuckinarandomnumbergeneratorfactory'
 DEBUG: True
 DB_HOST: 'db'
+DB_PORT: 3306
 DB_NAME: 'quarry'
 DB_USER: 'quarry'
 DB_PASSWORD: 'quarry'
+
+# Celery config, https://docs.celeryq.dev/en/stable/userguide/configuration.html
 broker_url: 'redis://redis'
 result_backend: 'redis://redis'
 worker_concurrency: 24  # Since all tasks are IO bound
 task_acks_late: True  # Tasks are idempotent!
 task_track_started: True
 worker_prefetch_multiplier: 1 # Tasks can run for a long time
-# Just query the quarry database itself.
-REPLICA_DOMAIN: ''
-REPLICA_HOST: 'mywiki'
-REPLICA_DB: 'mywiki_p'
-REPLICA_USER: 'repl'
-REPLICA_PASSWORD: 'repl'
+
+# Run queries against the live wikimedia replica databases. This requires a
+# toolforge account, so that you can retrieve your credentials from
+# ~/replica.my.cnf (and log into toolforge to establish the SOCKS5 proxy). These
+# lines should remain commented if you're not using a SOCKS5 proxy. The IP
+# address of the host running the docker container. On Windows or macOS this
+# might be `host.docker.internal`.
+# REPLICA_SOCKS5_PROXY_HOST: '172.17.0.1'
+# REPLICA_SOCKS5_PROXY_PORT: 1080
+
+
+# Run queries against a fake wiki database
+# Change these 3 lines if you're using the live replicas.
+REPLICA_DOMAIN: ''  # Change to `analytics.db.svc.wikimedia.cloud` for live replicas
+REPLICA_USER: 'repl'  # For live replicas, your replica.my.cnf username
+REPLICA_PASSWORD: 'repl'  # For live replicas, your replica.my.cnf password
 REPLICA_PORT: 3306
+
+TOOLS_DB_HOST: 'tools-readonly.db.svc.wikimedia.cloud'
+TOOLS_DB_PORT: 3306
+TOOLS_DB_USER: ''
+TOOLS_DB_PASSWORD: ''
+
+QUARRY_P_HOST: 'db'
+QUARRY_P_PORT: 3306
+QUARRY_P_USER: ''
+QUARRY_P_PASSWORD: ''
+
 OUTPUT_PATH_TEMPLATE: '/results/%s/%s/%s.sqlite'
 REDIS_HOST: 'redis'
 REDIS_PORT: 6379
@@ -29,3 +53,10 @@ QUERY_TIME_LIMIT: 60  # 1 minute
 QUERY_RESULTS_PER_PAGE: 50
 KILLER_LOG_PATH: 'killer.log'
 MAINTENANCE_MSG: 'This is your local development environment.'
+
+# https://flask-caching.readthedocs.io/en/latest/#configuring-flask-caching
+CACHE_TYPE: 'RedisCache'
+CACHE_DEFAULT_TIMEOUT: 30
+CACHE_REDIS_HOST: 'redis'
+CACHE_REDIS_PORT: 6379
+CACHE_REDIS_DB: 1

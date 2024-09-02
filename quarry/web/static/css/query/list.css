@@ -1,3 +1,12 @@
 .query-list-filters {
     margin-bottom: 10px;
 }
+
+.query-list-button {
+    padding: 6px 12px !important;
+}
+
+.query-search-container {
+    padding: 0px;
+    margin: 0px 0px 15px 0px;
+}

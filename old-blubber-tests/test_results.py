@@ -93,14 +93,15 @@ class TestResults:
         writer.resultset_id = self.resultset_id
 
         writer.start_resultset(
-            ["manny", "moe", '"jack"', b"nulltest\x00".decode("utf8")], 7
+            ["manny", "moe", "moe", "moe", '"jack"', b"nulltest\x00".decode("utf8")], 7
         )
-        assert writer.column_count == 4
+        assert writer.column_count == 6
         assert writer.cur_row_id == 0
         self.db_session.assert_has_calls(
             [
                 mocker.call(
-                    'CREATE TABLE resultset_555 (__id__ INTEGER PRIMARY KEY, "manny", "moe", """jack""", "nulltest")'
+                    'CREATE TABLE resultset_555 (__id__ INTEGER PRIMARY KEY, "manny", "moe", '
+                    '"moe_2", "moe_3", """jack""", "nulltest")'
                 )
             ]
         )

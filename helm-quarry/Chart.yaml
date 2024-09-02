@@ -1,0 +1,4 @@
+apiVersion: v2
+description: A Helm chart for quarry
+name: helm-quarry
+version: "1.0"

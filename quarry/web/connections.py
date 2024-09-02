@@ -10,16 +10,15 @@ class Connections(object):
     @property
     def db_engine(self):
         if not hasattr(self, "_db_engine"):
-            url = "mysql+pymysql://%s:%s@%s/%s?charset=utf8" % (
+            url = "mysql+pymysql://%s:%s@%s:%s/%s?charset=utf8" % (
                 self.config["DB_USER"],
                 self.config["DB_PASSWORD"],
                 self.config["DB_HOST"],
+                self.config["DB_PORT"],
                 self.config["DB_NAME"],
             )
 
-            # Recycle connections after 10 mins, since mysql does not
-            # like it otherwise
-            self._db_engine = create_engine(url, pool_recycle=600)
+            self._db_engine = create_engine(url, pool_size=12, pool_pre_ping=True)
 
         return self._db_engine
 

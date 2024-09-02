@@ -1,20 +1,16 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Blueprint
 
 templatehelpers = Blueprint("templatehelpers", __name__)
 
 
-@templatehelpers.add_app_template_filter
-def timesince(dt, default="just now"):
+def get_pretty_delay(diff: timedelta, suffix="", default="just now"):
     """
     Returns string representing "time since" e.g.
     3 days ago, 5 hours ago etc.
 
     From http://flask.pocoo.org/snippets/33/
     """
-
-    now = datetime.utcnow()
-    diff = now - dt
 
     periods = (
         (diff.days // 365, "year", "years"),
@@ -27,8 +23,18 @@ def timesince(dt, default="just now"):
     )
 
     for period, singular, plural in periods:
-
         if period:
-            return "%d %s ago" % (period, singular if period == 1 else plural)
+            return "%d %s %s" % (
+                period,
+                singular if period == 1 else plural,
+                suffix,
+            )
 
     return default
+
+
+@templatehelpers.add_app_template_filter
+def timesince(dt, default="just now"):
+    now = datetime.utcnow()
+    diff = now - dt
+    return get_pretty_delay(diff, suffix="ago", default=default)

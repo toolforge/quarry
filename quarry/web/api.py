@@ -225,21 +225,28 @@ def pref_set(key, value) -> Union[Tuple[str, int], Tuple[Response, int]]:
 @api_blueprint.route("/api/dbs")
 def get_dbs() -> Response:
     known_dbs = (
-        g.conn.session.query(QueryRevision.query_database).distinct().all()
+        g.conn.session.query(QueryRevision.query_database)
+        .join(QueryRun, QueryRevision.id == QueryRun.query_rev_id)
+        .filter(QueryRun.extra_info.notlike('{"error%'))
+        .filter(QueryRevision.query_database.isnot(None))
+        .distinct()
+        .all()
     )
-    return Response(
+    response = Response(
         json.dumps(
             {
                 "dbs": list(
                     set(
                         db_result[-1].strip()
                         for db_result in known_dbs
-                        # the db data might be NULL, empty strings or spaces+tabs only so this helps a bit to show only
-                        # likely names
-                        if db_result[-1] and db_result[-1].strip()
+                        if db_result[-1]
                     )
                 )
-            }
+            },
+            # Remove spaces to reduce response size
+            separators=(",", ":"),
         ),
         mimetype="application/json",
     )
+    response.headers["Cache-Control"] = "max-age=3600, public"
+    return response

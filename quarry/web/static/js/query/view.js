@@ -180,9 +180,7 @@ $( function () {
 	} );
 
 	$( '#stop-code' ).click( function () {
-		// revert favicon to default color
-		var favicon = document.querySelector("link[rel='icon']");
-		favicon.href = '/static/img/favicon.png';
+		updateFavicon( 'default' );
 
 		$.post( '/api/query/stop', {
 			query_database: $( '#query-db' ).val(),
@@ -197,9 +195,7 @@ $( function () {
 	} );
 
 	$( '#run-code' ).click( function () {
-		// update favicon to running color
-		var favicon = document.querySelector("link[rel='icon']");
-		favicon.href = '/static/img/favicon-running.png';
+		updateFavicon( 'running' );
 
 		$.post( '/api/query/run', {
 			text: editor !== null ? editor.getValue() : $( '#code' ).val(),
@@ -251,25 +247,24 @@ $( function () {
 					sendNotification( title + ' execution has been completed' );
 				}
 
-				// revert favicon to default color
-				var favicon = document.querySelector("link[rel='icon']");
-				favicon.href = '/static/img/favicon.png';
+				updateFavicon( 'default' );
 			} else if ( data.status === 'queued' || data.status === 'running' ) {
 				window.lastStatusCheck = setTimeout( function () {
 					checkStatus( qrun_id, false );
 				}, 5000 );
+				updateFavicon( 'running' );
 			}
 
 			/* separating this section from the above, similar, section as this has to
 			do with the status button where the above has to do with the status results.
 			They already diverge a little in purpose, could diverge more later */
-			if ( data.status === 'queued' || data.status === 'running' ) {
+			if ( data.status === 'running' ) {
 				document.getElementById( 'stop-code' ).style.visibility = 'visible';
 			} else {
 				document.getElementById( 'stop-code' ).style.visibility = 'hidden';
 			}
 			$( '#show-explain' ).off().click( function () {
-				$.get( '/explain/' + data.extra.connection_id ).done( function ( data ) {
+				$.get( '/explain/' + $( '#query-db' ).val() + '/' + data.extra.connection_id ).done( function ( data ) {
 					var $table = $( '#explain-results-table' );
 					if ( !$table.length ) {
 						$table = $( '<table>' ).attr( {
@@ -308,6 +303,7 @@ $( function () {
 			pagingType: 'simple_numbers',
 			paging: data.rows.length > 100,
 			pageLength: 100,
+			lengthMenu: [10, 25, 50, 100, 200, 250, 500],
 			deferRender: true,
 			order: [],
 			destroy: true
@@ -360,6 +356,15 @@ $( function () {
 		} else {
 			console.log( 'Can\'t send notification, permission value is set to ' + Notification.permission );
 			$.get( '/api/preferences/set/use_notifications/null' );
+		}
+	}
+
+	function updateFavicon( state ) {
+		var favicon = document.querySelector("link[rel='icon']");
+		if ( state === 'running' ) {
+			favicon.href = '/static/img/favicon-running.png';
+		} else {
+			favicon.href = '/static/img/favicon.png';
 		}
 	}
 
