@@ -22,6 +22,8 @@ source secrets.sh
 python3 -m venv .venv/deploy
 source .venv/deploy/bin/activate
 pip install ansible==8.1.0 kubernetes==26.1.0
+# install helm diff. Needed to keep helm module idempotent
+helm plugin install https://github.com/databus23/helm-diff || true
 
 cd tofu
 AWS_ACCESS_KEY_ID=${ACCESS_KEY} AWS_SECRET_ACCESS_KEY=${SECRET_KEY} tofu init
@@ -29,6 +31,9 @@ AWS_ACCESS_KEY_ID=${ACCESS_KEY} AWS_SECRET_ACCESS_KEY=${SECRET_KEY} tofu apply #
 export KUBECONFIG=$(pwd)/kube.config
 
 cd ../ansible
+# install collections here to take advantage of ansible.cfg configs
+ansible-galaxy collection install -U kubernetes.core -p ./collections
+
 ansible-playbook quarry.yaml
 #kubectl create namespace quarry --dry-run=client -o yaml | kubectl apply -f -
 #helm -n quarry upgrade --install quarry helm-quarry -f helm-quarry/prod-env.yaml
