@@ -24,8 +24,6 @@ is running in. After that, to start with code changes, you'll want to `docker-co
 to clean up. Also, this creates a docker volume where sqlite versions of query
 results are found. That will not be cleaned up unless you run `docker-compose down -v`
 
-
-
 # minikube
 It is possible to run a quarry system inside [minikube](https://minikube.sigs.k8s.io/docs/)!
 At this time, you need to set it up with a cluster version before 1.22, most likely.
@@ -62,7 +60,6 @@ If you had already run a dev environment (that is, ran `docker-compose up`) you 
 the containers with the new dependencies by running `docker-compose build` before running
 `docker-compose up` again.
 
-
 ## Useful commands ##
 
 To pre-compile nunjucks templates:
@@ -90,19 +87,51 @@ git-crypt unlock <path to decryption key>
 ```
 
 ## Deploying to production ##
-From the quarry-bastion:
-`git clone https://github.com/toolforge/quarry.git`
-`cd quarry`
-`git checkout <branch>` If not deploying main
-`git-crypt unlock <path to key>`
-`bash deploy.sh`
-In horizon point the web proxy at the new cluster.
+
+From `quarry-bastion.quarry.eqiad1.wikimedia.cloud`:
+
+```
+git clone https://github.com/toolforge/quarry.git
+cd quarry
+git checkout <branch> # If not deploying main
+git-crypt unlock <path to encryption key>
+bash deploy.sh
+```
+
+### Testing and deploying a Pull Request ###
+
+After a PR has been reviewed, and if the CI runs successfully, the current
+procedure is to deploy it to production _before_ merging the PR, so that you can
+verify that it is working correctly.
+
+This procedure makes sure that we never merge non-working code to `main`, but
+you have to be careful because if you deploy a branch that is stale, you might
+undo some recent changes deployed by somebody else.
+
+* Make sure your PR is not stale:
+* Github should note that the PR has updates or conflicts and offer to fix them.
+* Alternatively:
+  * `git checkout main`
+  * `git pull`
+  * `git checkout <branch>`
+  * `git fetch`
+  * `git rebase origin/main`
+  * `git push --force`
+* Wait for the CI to build the image
+* Deploy with `bash deploy.sh`
+* If everything works, merge the PR. No need to redeploy after merging.
+* If something breaks, revert your change:
+  * `git checkout main`
+  * `git pull`
+  * Re-deploy with `bash deploy.sh`
 
 ### Fresh deploy ###
-For a completely fresh deploy, and nfs server will need to be setup. Add its hostname to helm-quarry/prod-env.yaml.
+For a completely fresh deploy, an nfs server will need to be setup. Add its hostname to helm-quarry/prod-env.yaml.
 And an object store will need to be generated for the tofu state file. Named "tofu-state"
 And setup mysql:
 `mysql -uquarry -h <trove hostname created in by tofu> -p < schema.sql`
+
+After a fresh deploy, go to Horizon and point the web proxy at the new cluster.
 
 ## troubleshooting ##
 If ansible doesn't detect a change for quarry helm the following can be run:
