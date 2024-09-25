@@ -1,5 +1,6 @@
 from flask import current_app, Flask, render_template, g
 from flask_caching import Cache
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from .config import get_config
 from .connections import Connections
@@ -31,6 +32,7 @@ def kill_context(exception=None):
 
 def create_app(test_config=None):
     app = Flask(__name__)
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1)
 
     if test_config is None:
         app.config.update(get_config())
