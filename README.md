@@ -79,12 +79,17 @@ Bug: T317566
 
 ## git-crypt ##
 
-git-crypt is used to encrypt the config.yaml file. To decrypt ask a maintainer for the decryption key and:
+[git-crypt](https://github.com/AGWA/git-crypt) is used to encrypt the config.yaml file.
+We're using the "symmetric key mode" of git-crypt, with a single secret key.
+
+To decrypt ask a maintainer for the secret key and:
 ```
 git clone https://github.com/toolforge/quarry.git
 cd quarry
-git-crypt unlock <path to decryption key>
+git-crypt unlock <path to secret key>
 ```
+
+A copy of the decryption key is stored in [Pwstore](https://wikitech.wikimedia.org/wiki/Pwstore).
 
 ## Deploying to production ##
 
