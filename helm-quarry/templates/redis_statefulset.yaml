@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: redis
   labels:
     app: redis
 spec:
   replicas: 1
+  serviceName: redis
   selector:
     matchLabels:
       app: redis
@@ -18,3 +19,10 @@ spec:
         - name: redis
           image: redis:alpine3.18
           imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /data
+              name: redis-data
+      volumes:
+        - name: redis-data
+          emptyDir:
+            sizeLimit: 50Mi
