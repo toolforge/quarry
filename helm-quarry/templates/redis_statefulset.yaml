@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: redis
   labels:
     app: redis
 spec:
   replicas: 1
+  serviceName: redis
   selector:
     matchLabels:
       app: redis
