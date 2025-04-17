@@ -19,3 +19,10 @@ spec:
         - name: redis
           image: redis:alpine3.18
           imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /data
+              name: redis-data
+      volumes:
+        - name: redis-data
+          emptyDir:
+            sizeLimit: 50Mi
