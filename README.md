@@ -138,6 +138,31 @@ And setup mysql:
 
 After a fresh deploy, go to Horizon and point the web proxy at the new cluster.
 
+
+## upgrade or replace existing deploy ##
+1) Copy the primary tofu file (today that is tofu/127b.tf) to a new name, e.g. 127c.tf
+2) In the new file, search and replace the old name with the new name (s/127b/127c/g)
+3) Remove the 'resource "local_file" "kube_config"' definition from the old .tf file
+
+Now you have an existing blue deployment (127b) and a potential green
+deployment (127c).
+
+Now when you run deploy.sh, tofu will ignore the old (blue) magnum cluster, and
+build a new (green) cluster next to it. The old kube.config file will be overwritten
+with the bindings for the new cluster, and ansible will deploy paws to the new cluster.
+
+If you get to the end of that without warnings, then you have two largely
+interchangeable clusters. Adjust the web proxy entry in Horizon to point
+to node-0 in the new magnum cluster and make sure it works. If it doesn't flip
+the proxy back, destroy the new (green) magnum cluster and repeat as needed.
+
+If all is well, then remove the old/blue tofu file (127.b.tf) and re-deploy,
+and which point the blue cluster will be torn down by tofu and the remaining
+setup left intact.
+
+The failover between clusters is largely harmless to users since most state is
+stored outside the cluster.
+
 ## troubleshooting ##
 If ansible doesn't detect a change for quarry helm the following can be run:
 `helm -n quarry upgrade --install quarry helm-quarry -f helm-quarry/prod-env.yaml`
