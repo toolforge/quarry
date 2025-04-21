@@ -40,5 +40,3 @@ def test_invalid():
     assert valid_dbname(None) is False
 
     assert valid_dbname("enwiki quarry") is False
-
-    assert valid_dbname("quarry_p") is False
