@@ -27,7 +27,9 @@ conn: Connections = None
 
 
 def get_replag(cur):
-    cur.execute("SELECT * FROM information_schema.tables WHERE table_schema='heartbeat_p' and table_name='heartbeat';")
+    cur.execute(
+        "SELECT * FROM information_schema.tables WHERE table_schema='heartbeat_p' and table_name='heartbeat';"
+    )
     if cur.rowcount:
         cur.execute("SELECT lag FROM heartbeat_p.heartbeat;")
         return int(cur.fetchall()[0][0])
@@ -150,7 +152,9 @@ def run_query(query_run_id):
         conn.session.commit()
         if sys.version_info.minor == 7:
             # Python 3.7, remove when upgrading
-            tb = traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+            tb = traceback.format_exception(
+                etype=type(e), value=e, tb=e.__traceback__
+            )
         else:
             # Python 3.10+
             tb = traceback.format_exception(e)

@@ -18,7 +18,9 @@ class Connections(object):
                 self.config["DB_NAME"],
             )
 
-            self._db_engine = create_engine(url, pool_size=12, pool_pre_ping=True)
+            self._db_engine = create_engine(
+                url, pool_size=12, pool_pre_ping=True
+            )
 
         return self._db_engine
 
