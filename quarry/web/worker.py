@@ -50,7 +50,6 @@ def init(*args, **kwargs):
 
 @worker_process_shutdown.connect
 def shutdown(*args, **kwargs):
-    global conn
     conn.close_all()
     del repl.connection
     celery_log.info("Closed all connections")
@@ -58,8 +57,6 @@ def shutdown(*args, **kwargs):
 
 @celery.task(name="worker.run_query")
 def run_query(query_run_id):
-    global conn
-
     cur = False
     try:
         celery_log.info("Starting run for qrun:%s", query_run_id)
