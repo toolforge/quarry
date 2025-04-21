@@ -2,7 +2,7 @@ resource "openstack_containerinfra_cluster_v1" "k8s_127a" {
   name                = "quarry-127a"
   cluster_template_id = resource.openstack_containerinfra_clustertemplate_v1.template_127a.id
   master_count        = 1
-  node_count          = 2
+  node_count          = 3
 }
 
 resource "local_file" "kube_config" {
