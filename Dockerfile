@@ -1,5 +1,4 @@
-# Use official python base image, small and debian edition
-FROM amd64/python:3.7.16-slim
+FROM docker-registry.wikimedia.org/python3-bookworm:latest
 
 # Create Quarry user, create /results folder owned by this user,
 # to be mounted as volume to be shared between web and runner in dev setup
