@@ -141,3 +141,6 @@ After a fresh deploy, go to Horizon and point the web proxy at the new cluster.
 ## troubleshooting ##
 If ansible doesn't detect a change for quarry helm the following can be run:
 `helm -n quarry upgrade --install quarry helm-quarry -f helm-quarry/prod-env.yaml`
+
+For shell access, a debug pod can be created on a running node with something lie
+$ kubectl debug node/quarry-127a-g4ndvpkr5sro-node-0 -it --image debian:stable  
