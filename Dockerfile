@@ -11,7 +11,9 @@ WORKDIR /app
 COPY requirements.txt /app
 # Install dependencies
 # TODO: Use a venv instead of --break-system-packages
-RUN pip install --break-system-packages --upgrade pip wheel && \
+# TODO: Use newer pip. That requires newer celery, which in turn requires
+# newer versions of basically everything else.
+RUN pip install --break-system-packages --upgrade pip==24.0 wheel && \
     pip install --break-system-packages -r requirements.txt
 
 # Copy app code
