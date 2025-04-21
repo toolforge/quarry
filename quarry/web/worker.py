@@ -23,7 +23,7 @@ celery_log = get_task_logger(__name__)
 celery = Celery("quarry.web.worker")
 celery.conf.update(get_config())
 
-conn: Connections = None
+conn: Connections = None  # type: ignore
 
 
 def get_replag(cur):
