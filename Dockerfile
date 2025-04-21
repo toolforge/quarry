@@ -10,8 +10,9 @@ WORKDIR /app
 
 COPY requirements.txt /app
 # Install dependencies
-RUN pip install --upgrade pip wheel && \
-    pip install -r requirements.txt
+# TODO: Use a venv instead of --break-system-packages
+RUN pip install --break-system-packages --upgrade pip wheel && \
+    pip install --break-system-packages -r requirements.txt
 
 # Copy app code
 USER quarry
