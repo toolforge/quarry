@@ -1,5 +1,4 @@
 import json
-import sys
 import timeit
 import traceback
 from datetime import timedelta
@@ -147,14 +146,7 @@ def run_query(query_run_id):
         qrun.extra_info = json.dumps({"error": repr(e)})
         conn.session.add(qrun)
         conn.session.commit()
-        if sys.version_info.minor == 7:
-            # Python 3.7, remove when upgrading
-            tb = traceback.format_exception(
-                etype=type(e), value=e, tb=e.__traceback__
-            )
-        else:
-            # Python 3.10+
-            tb = traceback.format_exception(e)
+        tb = traceback.format_exception(e)
         celery_log.error(
             "Exception for qrun:%s, error: %s, traceback: %s",
             qrun.id,
