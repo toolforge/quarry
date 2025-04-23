@@ -1,5 +1,4 @@
 import json
-import sys
 import timeit
 import traceback
 from datetime import timedelta
@@ -23,11 +22,13 @@ celery_log = get_task_logger(__name__)
 celery = Celery("quarry.web.worker")
 celery.conf.update(get_config())
 
-conn: Connections = None
+conn: Connections = None  # type: ignore
 
 
 def get_replag(cur):
-    cur.execute("SELECT * FROM information_schema.tables WHERE table_schema='heartbeat_p' and table_name='heartbeat';")
+    cur.execute(
+        "SELECT * FROM information_schema.tables WHERE table_schema='heartbeat_p' and table_name='heartbeat';"
+    )
     if cur.rowcount:
         cur.execute("SELECT lag FROM heartbeat_p.heartbeat;")
         return int(cur.fetchall()[0][0])
@@ -48,7 +49,6 @@ def init(*args, **kwargs):
 
 @worker_process_shutdown.connect
 def shutdown(*args, **kwargs):
-    global conn
     conn.close_all()
     del repl.connection
     celery_log.info("Closed all connections")
@@ -56,8 +56,6 @@ def shutdown(*args, **kwargs):
 
 @celery.task(name="worker.run_query")
 def run_query(query_run_id):
-    global conn
-
     cur = False
     try:
         celery_log.info("Starting run for qrun:%s", query_run_id)
@@ -148,12 +146,7 @@ def run_query(query_run_id):
         qrun.extra_info = json.dumps({"error": repr(e)})
         conn.session.add(qrun)
         conn.session.commit()
-        if sys.version_info.minor == 7:
-            # Python 3.7, remove when upgrading
-            tb = traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
-        else:
-            # Python 3.10+
-            tb = traceback.format_exception(e)
+        tb = traceback.format_exception(e)
         celery_log.error(
             "Exception for qrun:%s, error: %s, traceback: %s",
             qrun.id,

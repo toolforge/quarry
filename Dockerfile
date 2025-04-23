@@ -1,5 +1,4 @@
-# Use official python base image, small and debian edition
-FROM amd64/python:3.7.16-slim
+FROM docker-registry.wikimedia.org/python3-bookworm:latest
 
 # Create Quarry user, create /results folder owned by this user,
 # to be mounted as volume to be shared between web and runner in dev setup
@@ -11,8 +10,11 @@ WORKDIR /app
 
 COPY requirements.txt /app
 # Install dependencies
-RUN pip install --upgrade pip wheel && \
-    pip install -r requirements.txt
+# TODO: Use a venv instead of --break-system-packages
+# TODO: Use newer pip. That requires newer celery, which in turn requires
+# newer versions of basically everything else.
+RUN pip install --break-system-packages --upgrade pip==24.0 wheel && \
+    pip install --break-system-packages -r requirements.txt
 
 # Copy app code
 USER quarry
