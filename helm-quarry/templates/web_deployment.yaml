@@ -41,6 +41,8 @@ spec:
               subPath: config.yaml
             - mountPath: /tmp
               name: tmp
+          securityContext:
+            readOnlyRootFilesystem: true
           resources:
             requests:
               memory: {{ .Values.web.memory }}
