@@ -26,6 +26,8 @@ spec:
             - name: config
               mountPath: /app/quarry/config.yaml
               subPath: config.yaml
+            - mountPath: /tmp
+              name: tmp
           resources:
             requests:
               memory: {{ .Values.worker.memory }}
@@ -43,3 +45,6 @@ spec:
         - name: config
           configMap:
             name: config
+        - name: tmp
+          emptyDir:
+            sizeLimit: 1Gi
