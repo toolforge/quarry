@@ -37,6 +37,8 @@ class Connections(object):
                 host=self.config["REDIS_HOST"],
                 port=self.config["REDIS_PORT"],
                 db=self.config["REDIS_DB"],
+                socket_timeout=1,
+                socket_connect_timeout=1,
             )
         return self._redis
 
