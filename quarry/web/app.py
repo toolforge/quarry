@@ -30,6 +30,10 @@ def kill_context(exception=None):
     del g.replica.connection
 
 
+def handle_internal_error(e: Exception):
+    return render_template("500.html")
+
+
 def create_app(test_config=None):
     app = Flask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1)
@@ -38,6 +42,9 @@ def create_app(test_config=None):
         app.config.update(get_config())
     else:
         app.config.from_mapping(test_config)
+
+    # Note: This only works when DEBUG is set to false.
+    app.register_error_handler(Exception, handle_internal_error)
 
     app.register_blueprint(auth)
     app.register_blueprint(health_blueprint)
