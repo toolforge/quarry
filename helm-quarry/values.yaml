@@ -5,6 +5,9 @@ web:
     requests:
       memory: "300Mi"
       cpu: "100m"
+    limits:
+      memory: "500Mi"
+      cpu: "1"
 
 worker:
   repository: 'quay.io/wikimedia-quarry/quarry'
@@ -13,3 +16,6 @@ worker:
     requests:
       memory: "400Mi"
       cpu: "100m"
+    limits:
+      memory: "2Gi"
+      cpu: "1"
