@@ -22,6 +22,8 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: redis-data
+          resources:
+            {{- toYaml .Values.redis.resources | nindent 12 }}
       volumes:
         - name: redis-data
           emptyDir:

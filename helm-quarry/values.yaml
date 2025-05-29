@@ -19,3 +19,12 @@ worker:
     limits:
       memory: "2Gi"
       cpu: "1"
+
+redis:
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "125m"
+    limits:
+      memory: "256Mi"
+      cpu: "250m"
