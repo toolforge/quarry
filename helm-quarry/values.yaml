@@ -1,7 +1,15 @@
 web:
   repository: 'quay.io/wikimedia-quarry/quarry'
   tag: pr-82 # web tag managed by github actions
+  resources:
+    requests:
+      memory: "300Mi"
+      cpu: "100m"
 
 worker:
   repository: 'quay.io/wikimedia-quarry/quarry'
   tag: pr-82 # worker tag managed by github actions
+  resources:
+    requests:
+      memory: "400Mi"
+      cpu: "100m"
