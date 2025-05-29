@@ -2,9 +2,6 @@ localdev:
   enabled: true
 web:
   replicas: 1
-  memory: "300Mi"
-  cpu: "100m"
 worker:
   replicas: 1
-  memory: "400Mi"
-  cpu: "100m"
+ 

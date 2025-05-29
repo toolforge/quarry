@@ -44,9 +44,7 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
           resources:
-            requests:
-              memory: {{ .Values.web.memory }}
-              cpu: {{ .Values.web.cpu }}
+            {{- toYaml .Values.worker.resources | nindent 12 }}
       volumes:
         - name: results
 {{ if .Values.localdev.enabled }}
