@@ -23,8 +23,8 @@ worker:
 redis:
   resources:
     requests:
-      memory: "128Mi"
+      memory: "256Mi"
       cpu: "125m"
     limits:
-      memory: "256Mi"
+      memory: "512Mi"
       cpu: "250m"
