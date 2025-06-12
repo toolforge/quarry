@@ -27,4 +27,4 @@ spec:
       volumes:
         - name: redis-data
           emptyDir:
-            sizeLimit: 50Mi
+            sizeLimit: {{ .Values.redis.resources.limits.memory }}
