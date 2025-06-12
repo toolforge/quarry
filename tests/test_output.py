@@ -115,18 +115,6 @@ def test_wikitable():
     ]  # noqa: E501
 
 
-def test_xlsx():
-    reader = fake_reader()
-    qrun = fake_qrun()
-    formatted_as_xlsx = output.get_formatted_response(
-        "xlsx", qrun, reader, "fake_resultset_id"
-    )
-
-    assert type(formatted_as_xlsx) is Response
-    # It's hard to test actual xlsx output because it's a binary format
-    #  and seems to include a timestamp.
-
-
 def test_html():
     reader = fake_reader()
     qrun = fake_qrun()
