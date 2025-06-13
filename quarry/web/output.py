@@ -1,12 +1,10 @@
 import csv
 import itertools
 import json
-import tempfile
 import types
 
 from flask import Response, escape
 from werkzeug.contrib.iterio import IterI
-import xlsxwriter
 
 
 def get_formatted_response(format, queryrun, reader, resultset_id):
@@ -20,8 +18,6 @@ def get_formatted_response(format, queryrun, reader, resultset_id):
         return separated_formatter(reader, resultset_id, "\t")
     elif format == "wikitable":
         return wikitable_formatter(reader, resultset_id)
-    elif format == "xlsx":
-        return xlsx_formatter(reader, resultset_id)
     elif format == "html":
         return html_formatter(reader, resultset_id)
     return Response("Bad file format", status=400)
@@ -183,49 +179,6 @@ def wikitable_formatter(reader, resultset_id):
 
     return Response(
         _join_lines(respond()), content_type="text/plain; charset=utf-8"
-    )
-
-
-def xlsx_formatter(reader, resultset_id):
-    rows = _stringify_results(
-        _csv_injection_escape(
-            reader.get_rows(
-                resultset_id,
-            )
-        )
-    )
-
-    def respond(stream):
-        with tempfile.TemporaryDirectory() as tmpdir:
-            workbook = xlsxwriter.Workbook(
-                stream, {"constant_memory": True, "tmpdir": tmpdir}
-            )
-            worksheet = workbook.add_worksheet()
-
-            for row_num, row in enumerate(rows):
-                for col_num, cell in enumerate(row):
-                    # xlsxwriter does not handle invalid utf_8 characters, strip them out
-                    if isinstance(cell, str):
-                        cell = cell.encode("utf_8")
-                        cell = cell.decode("utf_8", "ignore")
-                    # T175285: xlsx can't do urls longer than 255 chars.
-                    # We first try writing it with write(), if it fails due to
-                    # type-specific errors (return code < -1; 0 is success and -1
-                    # is generic row/col dimension error), we use write_string to
-                    # force writing as string type, which has a max of 32767 chars.
-                    # This only works when cell is a string, however; so only
-                    # string will use fallback.
-                    if worksheet.write(
-                        row_num, col_num, cell
-                    ) < -1 and isinstance(cell, str):
-                        worksheet.write_string(row_num, col_num, cell)
-
-            workbook.close()
-
-    return Response(
-        _IterI(respond),
-        mimetype="application/vnd.openxmlformats-"
-        "officedocument.spreadsheetml.sheet",
     )
 
 
