@@ -66,6 +66,10 @@ table#query-results-sampled {
     min-height: 144px;
 }
 
+.cm-s-monokai .CodeMirror-linenumber {
+    color: #858484;
+}
+
 #code {
     font-family: Monaco, Consolas, "Ubuntu Mono", monospace;
     width: 100%;
