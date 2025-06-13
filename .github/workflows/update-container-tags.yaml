@@ -37,11 +37,11 @@ jobs:
             sed -i "s/tag: .* # ${i} tag managed by github actions$/tag: pr-${{ github.event.number }} # ${i} tag managed by github actions/" helm-quarry/values.yaml
           done
 
-      - uses: EndBug/add-and-commit@v7
+      - uses: EndBug/add-and-commit@v9
         with:
           add: 'helm-quarry/values.yaml'
           author_name: Github Action
           author_email: auto@github.com
           branch: ${{ env.GITHUB_REF }}
-          message: 'auto update of ${{ inputs.imagename }} tag'
+          message: 'auto update of tag'
           pull: --rebase --autostash
