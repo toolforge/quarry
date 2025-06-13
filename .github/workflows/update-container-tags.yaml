@@ -3,33 +3,16 @@
 name: update container tags
 
 'on':
-  pull_request_target:
+  pull_request:
 
 jobs:
   update-container-tags:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_REF: ${{ github.head_ref }}
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
-
-      - name: git fetch
-        run: |
-          git fetch
-      - name: git checkout
-        run: |
-          git checkout "$GITHUB_REF"
-
-      # compare  to upstream main branch
-      - name: git add remote
-        run: |
-          git remote add quarry https://github.com/toolforge/quarry.git
-      - name: git remote update
-        run: |
-          git remote update
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: update values.yaml
         run: |
@@ -42,5 +25,4 @@ jobs:
           add: 'helm-quarry/values.yaml'
           author_name: Github Action
           author_email: auto@github.com
-          branch: ${{ env.GITHUB_REF }}
           message: 'auto update of tag'
