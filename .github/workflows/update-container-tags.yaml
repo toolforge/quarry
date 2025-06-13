@@ -44,4 +44,3 @@ jobs:
           author_email: auto@github.com
           branch: ${{ env.GITHUB_REF }}
           message: 'auto update of tag'
-          pull: --rebase --autostash
