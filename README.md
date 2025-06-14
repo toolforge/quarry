@@ -63,7 +63,7 @@ the containers with the new dependencies by running `docker-compose build` befor
 ## Useful commands ##
 
 To pre-compile nunjucks templates:
-`nunjucks-precompile quarry/web/static/templates/ > quarry/web/static/templates/compiled.js`
+`npm run build`
 
 See also commands listed in the mainters documentation:
 https://wikitech.wikimedia.org/wiki/Portal:Data_Services/Admin/Quarry
