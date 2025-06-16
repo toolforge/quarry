@@ -4,9 +4,11 @@
 		"test": "eslint quarry/web/static/js/",
 		"build": "nunjucks-precompile quarry/web/static/templates/ > quarry/web/static/templates/compiled.js"
 	},
+	"dependencies": {
+		"nunjucks": "3.0.1"
+	},
 	"devDependencies": {
 		"eslint": "8.57.0",
-		"eslint-config-wikimedia": "0.30.0",
-		"nunjucks": "3.0.1"
+		"eslint-config-wikimedia": "0.30.0"
 	}
 }
