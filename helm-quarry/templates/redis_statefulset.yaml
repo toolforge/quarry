@@ -24,6 +24,23 @@ spec:
               name: redis-data
           resources:
             {{- toYaml .Values.redis.resources | nindent 12 }}
+          ports:
+            - containerPort: 6379
+        - name: redis-exporter
+          image: {{ .Values.redis.exporter.image }}
+          securityContext:
+            runAsUser: 59000
+            runAsGroup: 59000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - containerPort: 9121
       volumes:
         - name: redis-data
           emptyDir:
