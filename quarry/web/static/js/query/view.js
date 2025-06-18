@@ -304,7 +304,7 @@ $( function () {
 			pagingType: 'simple_numbers',
 			paging: data.rows.length > 100,
 			pageLength: 100,
-			lengthMenu: [10, 25, 50, 100, 200, 250, 500],
+			lengthMenu: [ 10, 25, 50, 100, 200, 250, 500 ],
 			deferRender: true,
 			order: [],
 			destroy: true
@@ -361,7 +361,7 @@ $( function () {
 	}
 
 	function updateFavicon( state ) {
-		var favicon = document.querySelector("link[rel='icon']");
+		var favicon = document.querySelector( "link[rel='icon']" );
 		if ( state === 'running' ) {
 			favicon.href = '/static/img/favicon-running.png';
 		} else {
