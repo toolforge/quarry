@@ -28,3 +28,5 @@ redis:
     limits:
       memory: "512Mi"
       cpu: "250m"
+  exporter:
+    image: quay.io/oliver006/redis_exporter:v1.74.0

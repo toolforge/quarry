@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-exporter
+  labels:
+    app: redis
+spec:
+  ports:
+    - name: web
+      port: 9121
+      nodePort: 9121
+      protocol: TCP
+      targetPort: 9121
+  selector:
+    app: redis
+  type: NodePort
