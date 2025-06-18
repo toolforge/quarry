@@ -1,4 +1,4 @@
-$( function () {
+$( () => {
 	if ( $( '#option-useNotifications' ).length ) {
 		if ( !window.Notification ) {
 			$( '#option-useNotifications .error' ).css( 'display', 'inline' );
@@ -7,7 +7,7 @@ $( function () {
 
 		$( '#option-useNotifications-checkbox' ).prop( 'checked', vars.preferences.use_notifications );
 
-		$( '#option-useNotifications-checkbox' ).change( function () {
+		$( '#option-useNotifications-checkbox' ).on( 'change', function () {
 			if ( this.checked ) {
 				Notification.requestPermission().then( function ( result ) {
 					if ( result === 'granted' ) {

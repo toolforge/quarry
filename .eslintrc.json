@@ -1,12 +1,9 @@
 {
-	"extends": "wikimedia",
-	"env": {
-		"browser": true,
-		"es6": true
-	},
+	"extends": [
+		"wikimedia/client",
+		"wikimedia/jquery"
+	],
 	"globals": {
-		"$": false,
-		"jQuery": false,
 		"nunjucks": false,
 		"CodeMirror": false,
 		"vars": true
@@ -16,6 +13,8 @@
 		"no-console": 0,
 		"no-alert": 0,
 		"vars-on-top": 0,
-		"no-use-before-define": 0
+		"no-use-before-define": 0,
+		"no-jquery/no-done-fail": 0,
+		"no-jquery/no-global-selector": "warn"
 	}
 }
