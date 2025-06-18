@@ -40,7 +40,7 @@ spec:
               cpu: 100m
               memory: 100Mi
           ports:
-            - containerPort: 9121
+            - containerPort: 30121
       volumes:
         - name: redis-data
           emptyDir:
