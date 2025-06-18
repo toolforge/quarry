@@ -1,4 +1,4 @@
-$( function () {
+$( () => {
 	function htmlEscape( str ) {
 		return String( str )
 			.replace( /&/g, '&amp;' )
@@ -19,7 +19,7 @@ $( function () {
 		} );
 	}
 
-	var editor = makeEditor();
+	let editor = makeEditor();
 	$( '#query-description' ).autosize();
 	$.ajax( {
 		url: '/api/dbs',
@@ -30,23 +30,26 @@ $( function () {
 
 	function addAutocompleteDB( input_elem, options ) {
 		/* Autocomplete an input element from the given array
-		adapted from https://www.w3schools.com/howto/howto_js_autocomplete.asp*/
-		var currentFocus;
+		adapted from https://www.w3schools.com/howto/howto_js_autocomplete.asp */
+		let currentFocus;
 		input_elem.addEventListener( 'input', function () {
-			var list_elem, i, val = this.value;
+			const val = this.value;
 			closeAllLists();
-			if ( !val ) { return false; }
+			if ( !val ) {
+				return false;
+			}
 			currentFocus = -1;
 
-			list_elem = $( '<div></div>', {
+			// eslint-disable-next-line no-jquery/variable-pattern,no-jquery/no-constructor-attributes
+			const list_elem = $( '<div>', {
 				id: this.id + '-autocomplete-list',
-				'class': 'autocomplete-items'
+				class: 'autocomplete-items'
 			} );
 			list_elem.appendTo( input_elem.parentElement );
-			for ( i = 0; i < options.length; i++ ) {
-				/* check if the item starts with the same letters as the text field value:*/
-				if ( options[ i ].substr( 0, val.length ).toUpperCase() === val.toUpperCase() ) {
-					$( '<div><strong>' + options[ i ].substr( 0, val.length ) + options[ i ].substr( val.length ) + '</strong><input type="hidden" value="' + options[ i ] + '">' )
+			for ( let i = 0; i < options.length; i++ ) {
+				/* check if the item starts with the same letters as the text field value: */
+				if ( options[ i ].slice( 0, val.length ).toUpperCase() === val.toUpperCase() ) {
+					$( '<div><strong>' + options[ i ].slice( 0, val.length ) + options[ i ].slice( val.length ) + '</strong><input type="hidden" value="' + options[ i ] + '">' )
 						.on( {
 							click: function () {
 								input_elem.value = this.getElementsByTagName( 'input' )[ 0 ].value;
@@ -60,32 +63,38 @@ $( function () {
 		} );
 
 		input_elem.addEventListener( 'keydown', function ( e ) {
-			var list_elem = document.getElementById( this.id + '-autocomplete-list' );
-			if ( list_elem ) { list_elem = list_elem.getElementsByTagName( 'div' ); }
+			let list_elem = document.getElementById( this.id + '-autocomplete-list' );
+			if ( list_elem ) {
+				list_elem = list_elem.getElementsByTagName( 'div' );
+			}
 			if ( e.keyCode === 40 ) {
 				/* If the arrow DOWN key is pressed,
-				increase the currentFocus variable:*/
+				increase the currentFocus variable: */
 				currentFocus++;
-				/* and and make the current item more visible:*/
+				/* and and make the current item more visible: */
 				addActive( list_elem );
 			} else if ( e.keyCode === 38 ) {
 				/* If the arrow UP key is pressed,
-				decrease the currentFocus variable:*/
+				decrease the currentFocus variable: */
 				currentFocus--;
-				/* and and make the current item more visible:*/
+				/* and and make the current item more visible: */
 				addActive( list_elem );
 			} else if ( e.keyCode === 13 ) {
-				/* If the ENTER key is pressed, prevent the form from being submitted,*/
+				/* If the ENTER key is pressed, prevent the form from being submitted, */
 				e.preventDefault();
 				if ( currentFocus > -1 ) {
-				/* and simulate a click on the "active" item:*/
-					if ( list_elem ) { list_elem[ currentFocus ].click(); }
+				/* and simulate a click on the "active" item: */
+					if ( list_elem ) {
+						list_elem[ currentFocus ].click();
+					}
 				}
 			} else if ( e.keyCode === 9 ) {
-				/* close dropdown on tab press*/
+				/* close dropdown on tab press */
 				if ( currentFocus > -1 ) {
-				/* if focus was moved before tab press, use it*/
-					if ( list_elem ) { list_elem[ currentFocus ].click(); }
+				/* if focus was moved before tab press, use it */
+					if ( list_elem ) {
+						list_elem[ currentFocus ].click();
+					}
 				} else {
 					closeAllLists();
 				}
@@ -93,25 +102,31 @@ $( function () {
 		} );
 
 		function addActive( list_elem ) {
-			/* tag the next item in the list as active by adding the autocomplete-active class*/
-			if ( !list_elem ) { return false; }
+			/* tag the next item in the list as active by adding the autocomplete-active class */
+			if ( !list_elem ) {
+				return false;
+			}
 			removeActive( list_elem );
-			if ( currentFocus >= list_elem.length ) { currentFocus = 0; }
-			if ( currentFocus < 0 ) { currentFocus = ( list_elem.length - 1 ); }
+			if ( currentFocus >= list_elem.length ) {
+				currentFocus = 0;
+			}
+			if ( currentFocus < 0 ) {
+				currentFocus = ( list_elem.length - 1 );
+			}
 			list_elem[ currentFocus ].classList.add( 'autocomplete-active' );
 		}
 
 		function removeActive( list_elem ) {
-			/* clear all active items from the list*/
-			for ( var i = 0; i < list_elem.length; i++ ) {
+			/* clear all active items from the list */
+			for ( let i = 0; i < list_elem.length; i++ ) {
 				list_elem[ i ].classList.remove( 'autocomplete-active' );
 			}
 		}
 
 		function closeAllLists( not_to_close ) {
-			/* close all autocomplete lists in the document, except the one passed as an argument:*/
-			var i, autocomplete_items = document.getElementsByClassName( 'autocomplete-items' );
-			for ( i = 0; i < autocomplete_items.length; i++ ) {
+			/* close all autocomplete lists in the document, except the one passed as an argument: */
+			const autocomplete_items = document.getElementsByClassName( 'autocomplete-items' );
+			for ( let i = 0; i < autocomplete_items.length; i++ ) {
 				if ( not_to_close !== autocomplete_items[ i ] && not_to_close !== input_elem ) {
 					autocomplete_items[ i ].parentNode.removeChild( autocomplete_items[ i ] );
 				}
@@ -119,24 +134,24 @@ $( function () {
 		}
 
 		/* clear all autocomplete lists if there's a click anywhere */
-		document.addEventListener( 'click', function ( e ) {
+		document.addEventListener( 'click', ( e ) => {
 			closeAllLists( e.target );
 		} );
 	}
 
 	if ( vars.can_edit ) {
-		$( '#title' ).blur( function () {
-			var title = $( '#title' ).val();
+		$( '#title' ).on( 'blur', () => {
+			const title = $( '#title' ).val();
 			$.post( '/api/query/meta', {
 				query_id: vars.query_id,
 				title: title
-			} ).done( function ( /* data */ ) {
+			} ).done( ( /* data */ ) => {
 				document.title = ( title || 'Untitled query #' + vars.query_id ) + ' - Quarry';
 			} );
 		} );
 	}
 
-	$( '#togglehl' ).click( function () {
+	$( '#togglehl' ).on( 'click', () => {
 		if ( editor === null ) {
 			editor = makeEditor();
 		} else {
@@ -145,57 +160,58 @@ $( function () {
 		}
 	} );
 
-	$( '#un-star-query' ).click( function () {
+	$( '#un-star-query' ).on( 'click', () => {
 		$.post( '/api/query/unstar', {
 			query_id: vars.query_id
-		} ).done( function ( /* data */ ) {
+		} ).done( ( /* data */ ) => {
 			$( '#content' ).removeClass( 'starred' );
 		} );
 	} );
 
-	$( '#star-query' ).click( function () {
+	$( '#star-query' ).on( 'click', () => {
 		$.post( '/api/query/star', {
 			query_id: vars.query_id
-		} ).done( function ( /* data */ ) {
+		} ).done( ( /* data */ ) => {
 			$( '#content' ).addClass( 'starred' );
 		} );
 	} );
 
-	$( '#query-description' ).blur( function () {
+	$( '#query-description' ).on( 'blur', () => {
 		$.post( '/api/query/meta', {
 			query_id: vars.query_id,
 			description: $( '#query-description' ).val()
-		} ).done( function () {
+		} ).done( () => {
 			// Uh, do nothing?
 		} );
 	} );
 
-	$( '#toggle-publish' ).click( function () {
+	$( '#toggle-publish' ).on( 'click', () => {
 		$.post( '/api/query/meta', {
 			query_id: vars.query_id,
 			published: vars.published ? 0 : 1
-		} ).done( function ( /* data */ ) {
+		} ).done( ( /* data */ ) => {
+			// eslint-disable-next-line no-jquery/no-class-state
 			$( '#content' ).toggleClass( 'published' );
 			vars.published = !vars.published;
 		} );
 	} );
 
-	$( '#stop-code' ).click( function () {
+	$( '#stop-code' ).on( 'click', () => {
 		updateFavicon( 'default' );
 
 		$.post( '/api/query/stop', {
 			query_database: $( '#query-db' ).val(),
 			qrun_id: vars.qrun_id
 		} )
-			.done( function () {
+			.done( () => {
 				checkStatus( vars.qrun_id, false );
 			} )
-			.fail( function ( resp ) {
+			.fail( ( resp ) => {
 				alert( resp.responseText );
 			} );
 	} );
 
-	$( '#run-code' ).click( function () {
+	$( '#run-code' ).on( 'click', () => {
 		updateFavicon( 'running' );
 
 		$.post( '/api/query/run', {
@@ -203,7 +219,7 @@ $( function () {
 			query_database: $( '#query-db' ).val(),
 			query_id: vars.query_id
 		} )
-			.done( function ( data ) {
+			.done( ( data ) => {
 				vars.output_url = data.output_url;
 				$( '#query-progress' ).show();
 				$( '#query-result-error' ).hide();
@@ -212,15 +228,15 @@ $( function () {
 				checkStatus( data.qrun_id, false );
 				vars.qrun_id = data.qrun_id;
 			} )
-			.fail( function ( resp ) {
+			.fail( ( resp ) => {
 				alert( resp.responseText );
 			} );
 		return false;
 	} );
 
 	function checkStatus( qrun_id, silent ) {
-		var url = '/run/' + qrun_id + '/status';
-		$.get( url ).done( function ( data ) {
+		const url = '/run/' + qrun_id + '/status';
+		$.get( url ).done( ( data ) => {
 			$( '#query-status' ).html( 'Query status: <strong>' + data.status + '</strong>' );
 			$( '#query-result' ).html(
 				nunjucks.render( 'query-status.html', data )
@@ -232,9 +248,9 @@ $( function () {
 					$( '#query-result' ).prepend( '<p id="emptyresultsetmsg">This query returned no results.</p>' );
 				}
 
-				let runningdate = new Date( data.timestamp * 1000 ),
-					// Compatibility handling, old requests do not have the execution time stored.
-					headertext = 'Executed on ';
+				const runningdate = new Date( data.timestamp * 1000 );
+				// Compatibility handling, old requests do not have the execution time stored.
+				let headertext = 'Executed on ';
 				if ( data.extra.runningtime ) {
 					headertext = 'Executed in ' + data.extra.runningtime + ' seconds as of ';
 				}
@@ -244,13 +260,13 @@ $( function () {
 				);
 
 				if ( !silent && vars.preferences.use_notifications ) {
-					let title = $( '#title' ).val() ? '"' + $( '#title' ).val() + '"' : 'Untitled query #' + vars.query_id;
+					const title = $( '#title' ).val() ? '"' + $( '#title' ).val() + '"' : 'Untitled query #' + vars.query_id;
 					sendNotification( title + ' execution has been completed' );
 				}
 
 				updateFavicon( 'default' );
 			} else if ( data.status === 'queued' || data.status === 'running' ) {
-				window.lastStatusCheck = setTimeout( function () {
+				window.lastStatusCheck = setTimeout( () => {
 					checkStatus( qrun_id, false );
 				}, 5000 );
 				updateFavicon( 'running' );
@@ -264,34 +280,35 @@ $( function () {
 			} else {
 				document.getElementById( 'stop-code' ).style.visibility = 'hidden';
 			}
-			$( '#show-explain' ).off().click( function () {
-				$.get( '/explain/' + $( '#query-db' ).val() + '/' + data.extra.connection_id ).done( function ( data ) {
-					var $table = $( '#explain-results-table' );
+			$( '#show-explain' ).off().on( 'click', () => {
+				$.get( '/explain/' + $( '#query-db' ).val() + '/' + data.extra.connection_id ).done( ( explain ) => {
+					let $table = $( '#explain-results-table' );
 					if ( !$table.length ) {
 						$table = $( '<table>' ).attr( {
-							'class': 'table',
+							class: 'table',
 							id: 'explain-results-table'
 						} );
 
 						$( '#query-result-container' ).append( $table );
 					}
 
-					populateTable( $table, data );
+					populateTable( $table, explain );
 				} );
 			} );
 		} );
 	}
 
 	function populateTable( $table, data ) {
-		var columns = [];
-		$.each( data.headers, function ( i, header ) {
+		const columns = [];
+		// eslint-disable-next-line no-jquery/no-each-util
+		$.each( data.headers, ( i, header ) => {
 			columns.push( {
 				title: htmlEscape( header ),
-				render: function ( data /* , type, row */ ) {
-					if ( typeof data === 'string' ) {
-						return htmlEscape( data );
+				render: function ( item /* , type, row */ ) {
+					if ( typeof item === 'string' ) {
+						return htmlEscape( item );
 					} else {
-						return data;
+						return item;
 					}
 				}
 			} );
@@ -304,7 +321,7 @@ $( function () {
 			pagingType: 'simple_numbers',
 			paging: data.rows.length > 100,
 			pageLength: 100,
-			lengthMenu: [10, 25, 50, 100, 200, 250, 500],
+			lengthMenu: [ 10, 25, 50, 100, 200, 250, 500 ],
 			deferRender: true,
 			order: [],
 			destroy: true
@@ -320,14 +337,15 @@ $( function () {
 		return ( $( '#title' ).val() || 'untitled' )
 			.toLowerCase()
 			.split( /[\t !"#$%&'()*-/<=>?@[\\\]^_`{|},.]+/g )
-			.filter( function ( word ) { return word; } )
+			.filter( ( word ) => word )
 			.join( '-' );
 	}
 
 	function populateResults( qrun_id, resultset_id, till ) {
-		var url = '/run/' + qrun_id + '/output/' + resultset_id + '/json';
-		$.get( url ).done( function ( data ) {
-			var tableContainer = $( nunjucks.render( 'query-resultset.html', {
+		const url = '/run/' + qrun_id + '/output/' + resultset_id + '/json';
+		$.get( url ).done( ( data ) => {
+			// eslint-disable-next-line no-jquery/variable-pattern
+			const tableContainer = $( nunjucks.render( 'query-resultset.html', {
 					only_resultset: resultset_id === till - 1,
 					resultset_number: resultset_id + 1,
 					rowcount: data.rows.length,
@@ -361,7 +379,7 @@ $( function () {
 	}
 
 	function updateFavicon( state ) {
-		var favicon = document.querySelector("link[rel='icon']");
+		const favicon = document.querySelector( "link[rel='icon']" );
 		if ( state === 'running' ) {
 			favicon.href = '/static/img/favicon-running.png';
 		} else {
