@@ -1,4 +1,4 @@
-from flask import current_app, Flask, render_template, g
+from flask import current_app, Flask, render_template, g, Response
 from flask_caching import Cache
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -71,6 +71,10 @@ def create_app(test_config=None):
             stats_count_users=global_conn.session.query(User).count(),
             stats_count_runs=global_conn.session.query(QueryRun).count(),
         )
+
+    @app.route("/robots.txt")
+    def robots_txt():
+        return Response("User-Agent: *\nDisallow: /\n", mimetype="text/plain")
 
     return app
 
