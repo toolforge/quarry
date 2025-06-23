@@ -35,3 +35,9 @@ class TestApp:
         assert response.data
         assert "5 users" in response.data.decode("utf8")
         assert f"{5 * 3 * 3 * 3} queries" in response.data.decode("utf8")
+
+    def test_robots_txt(self, client):
+        response = client.get("/robots.txt")
+        assert response.status_code == 200
+        assert response.headers["Content-Type"] == "text/plain; charset=utf-8"
+        assert "User-Agent: *" in response.data.decode("utf8")
