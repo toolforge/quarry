@@ -60,6 +60,28 @@ If you had already run a dev environment (that is, ran `docker-compose up`) you 
 the containers with the new dependencies by running `docker-compose build` before running
 `docker-compose up` again.
 
+### Direct Local Development (Non-Containerized) ###
+
+If you prefer to run the Flask application directly on your machine without Docker, you must first set up the Python environment using Poetry.
+
+**Install Poetry:**
+```bash
+pip install poetry
+```
+
+**Install Dependencies:** Run this command from the project root. It will create a local virtual environment and install all required packages.
+```bash
+poetry install
+```
+
+**Activate Shell and Run:** Run your application (e.g., for testing or running locally):
+```bash
+poetry shell
+flask run
+```
+
+**Note:** You may need to run local Redis and database services separately to avoid ConnectionErrors.
+
 ## Useful commands ##
 
 To pre-compile nunjucks templates:
@@ -168,4 +190,4 @@ If ansible doesn't detect a change for quarry helm the following can be run:
 `helm -n quarry upgrade --install quarry helm-quarry -f helm-quarry/prod-env.yaml`
 
 For shell access, a debug pod can be created on a running node with something lie
-$ kubectl debug node/quarry-127a-g4ndvpkr5sro-node-0 -it --image debian:stable  
+$ kubectl debug node/quarry-127a-g4ndvpkr5sro-node-0 -it --image debian:stable
