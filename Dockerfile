@@ -12,12 +12,16 @@ WORKDIR /app
 RUN pip install --break-system-packages --upgrade pip==24.0 wheel && \
     pip install --break-system-packages poetry
 ENV POETRY_VIRTUALENVS_IN_PROJECT=true
+ENV PATH="/app/.venv/bin:$PATH"
 
 # 2. Copy dependency files
 COPY pyproject.toml poetry.lock /app/
 
-# 3. Install dependencies via Poetry
+# 3. Install dependencies via Poetry (no --break-system-packages needed)
 RUN poetry install --no-root --only main --no-interaction
+
+# 4. Ensure quarry user can access the virtual environment
+RUN chown -R quarry:quarry /app/.venv
 
 # Copy app code
 USER quarry

@@ -6,7 +6,7 @@ services:
     build: .
     # To mimic a production runtime, uncomment:
     # entrypoint: ["gunicorn", "-w", "2", "--bind", "0.0.0.0:5000", "wsgi:application"]
-    entrypoint: ["python3", "wsgi.py"]
+    entrypoint: ["poetry", "run", "python3", "wsgi.py"]
     volumes:
       - .:/app
       - results:/results
@@ -22,7 +22,7 @@ services:
     volumes:
       - .:/app
       - results:/results
-    entrypoint: ["celery", "--app", "quarry.web.worker", "worker", ]
+    entrypoint: ["poetry", "run", "celery", "--app", "quarry.web.worker", "worker", ]
     extra_hosts:
     - "host.docker.internal:host-gateway"
     depends_on:
