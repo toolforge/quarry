@@ -17,8 +17,21 @@ RUN pip install --break-system-packages --upgrade pip==24.0 wheel && \
     pip install --break-system-packages -r requirements.txt
 
 # Copy app code
-USER quarry
 COPY . /app
+
+# Build JS assets
+RUN apt-get update &&  \
+    apt-get install -y nodejs npm && \
+    NODE_ENV=production npm ci && \
+    npm run build && \
+    # Once the build is run, dependencies are no longer needed, delete them
+    # to keep image small
+    rm -rf node_modules &&  \
+    apt-get remove -y nodejs npm && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
+
+USER quarry
 
 # Expose port for web server
 EXPOSE 5000

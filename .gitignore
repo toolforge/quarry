@@ -20,3 +20,4 @@ terraform.tfstate*
 .terraform*
 tofu/kube.config
 ansible/collections/*
+quarry/web/static/templates/compiled.js
