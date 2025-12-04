@@ -1,5 +1,6 @@
 from flask import current_app, Flask, render_template, g, Response
 from flask_caching import Cache
+from werkzeug.exceptions import HTTPException
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from .config import get_config
@@ -31,7 +32,10 @@ def kill_context(exception=None):
 
 
 def handle_internal_error(e: Exception):
-    return render_template("500.html")
+    if isinstance(e, HTTPException):
+        return e
+    current_app.logger.error("Failed to handle request", exc_info=e)
+    return render_template("500.html"), 500
 
 
 def create_app(test_config=None):
