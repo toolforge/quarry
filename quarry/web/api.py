@@ -74,7 +74,10 @@ def api_set_meta() -> Tuple[Union[str, Response], int]:
         return "Authorization denied", 403
 
     if "title" in request.form:
-        query.title = request.form["title"]
+        title = request.form["title"]
+        if not title.strip():
+            title = None
+        query.title = title
     if "published" in request.form:
         query.published = request.form["published"] == "1"
     if "description" in request.form:
