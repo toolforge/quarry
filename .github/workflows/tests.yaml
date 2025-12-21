@@ -9,7 +9,10 @@ jobs:
   tox:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          repository: ${{ github.head_repo.full_name }}
 
       - name: build tox container
         run: |
@@ -21,6 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          repository: ${{ github.head_repo.full_name }}
       - name: Install dependencies
         run: npm ci
       - name: Run tests

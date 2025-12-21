@@ -4,7 +4,33 @@ import json
 import types
 
 from flask import Response, escape
-from werkzeug.contrib.iterio import IterI
+import io
+
+
+class IterI(io.BytesIO):
+    """Simple replacement for werkzeug.contrib.iterio.IterI"""
+
+    def __init__(self, generator):
+        self.generator = generator
+        self.pos = 0
+        self.buffer = b""
+        super().__init__()
+
+    def write(self, s):
+        if s:
+            self.buffer += s.encode() if isinstance(s, str) else s
+            self.pos += len(s)
+
+    def flush(self):
+        pass
+
+    def read(self, size=-1):
+        if size == -1:
+            return self.buffer
+        else:
+            result = self.buffer[:size]
+            self.buffer = self.buffer[size:]
+            return result
 
 
 def get_formatted_response(format, queryrun, reader, resultset_id):
