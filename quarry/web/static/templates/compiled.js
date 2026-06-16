@@ -18,7 +18,16 @@ output += "\n            ";
 }
 output += "\n            (";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "rowcount"), env.opts.autoescape);
-output += " rows)\n        </div>\n        <div class='col-md-4'>\n            <div class=\"btn-group pull-right\">\n                <button type=\"button\" class=\"btn btn-info btn-xs dropdown-toggle\" data-toggle=\"dropdown\">\n                    Download data <span class=\"caret\"></span>\n                </button>\n                <ul class=\"dropdown-menu\" role=\"menu\">\n                    ";
+output += " ";
+if(runtime.contextOrFrameLookup(context, frame, "rowcount") == 1) {
+output += "row";
+;
+}
+else {
+output += "rows";
+;
+}
+output += ")\n        </div>\n        <div class='col-md-4'>\n            <div class=\"btn-group pull-right\">\n                <button type=\"button\" class=\"btn btn-info btn-xs dropdown-toggle\" data-toggle=\"dropdown\">\n                    Download data <span class=\"caret\"></span>\n                </button>\n                <ul class=\"dropdown-menu\" role=\"menu\">\n                    ";
 frame = frame.push();
 var t_3 = {"tsv": "TSV","json": "JSON","json-lines": "JSON Lines","csv": "CSV","wikitable": "Wikitable","html": "HTML"};
 if(t_3) {var t_1;
