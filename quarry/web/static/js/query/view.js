@@ -151,6 +151,22 @@ $( () => {
 		} );
 	}
 
+	/* Copy an absolute result URL to the clipboard instead of downloading it. */
+	$( '#query-result' ).on( 'click', '.copy-link-menu a', function ( event ) {
+		event.preventDefault();
+		const $status = $( this ).closest( '.btn-toolbar' ).find( '.copy-link-status' );
+		navigator.clipboard.writeText( this.href ).then( () => {
+			$status.text( ' ✅️ Copied to clipboard' ).addClass( 'copy-link-status-shown' );
+			setTimeout( () => {
+				// Empty it once faded, so it stops taking up room in the header.
+				$status.one( 'transitionend', () => $status.text( '' ) )
+					.removeClass( 'copy-link-status-shown' );
+			}, 3000 );
+		}, ( err ) => {
+			console.log( 'Could not copy result link to clipboard', err );
+		} );
+	} );
+
 	$( '#togglehl' ).on( 'click', () => {
 		if ( editor === null ) {
 			editor = makeEditor();

@@ -18,7 +18,7 @@ output += "\n            ";
 }
 output += "\n            (";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "rowcount"), env.opts.autoescape);
-output += " rows)\n        </div>\n        <div class='col-md-4'>\n            <div class=\"btn-group pull-right\">\n                <button type=\"button\" class=\"btn btn-info btn-xs dropdown-toggle\" data-toggle=\"dropdown\">\n                    Download data <span class=\"caret\"></span>\n                </button>\n                <ul class=\"dropdown-menu\" role=\"menu\">\n                    ";
+output += " rows)\n        </div>\n        <div class='col-md-4'>\n            <div class=\"btn-toolbar pull-right\">\n                <span class=\"copy-link-status\" role=\"status\" aria-live=\"polite\"></span>\n                <div class=\"btn-group\">\n                    <button type=\"button\" class=\"btn btn-info btn-xs dropdown-toggle\" data-toggle=\"dropdown\">\n                        Download data <span class=\"caret\"></span>\n                    </button>\n                    <ul class=\"dropdown-menu\" role=\"menu\">\n                        ";
 frame = frame.push();
 var t_3 = {"tsv": "TSV","json": "JSON","json-lines": "JSON Lines","csv": "CSV","wikitable": "Wikitable","html": "HTML"};
 if(t_3) {var t_1;
@@ -36,7 +36,7 @@ frame.set("loop.revindex0", t_2 - t_1 - 1);
 frame.set("loop.first", t_1 === 0);
 frame.set("loop.last", t_1 === t_2 - 1);
 frame.set("loop.length", t_2);
-output += "\n                    <li><a href=\"/run/";
+output += "\n                        <li><a href=\"/run/";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "run_id"), env.opts.autoescape);
 output += "/output/";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "resultset_id"), env.opts.autoescape);
@@ -52,7 +52,7 @@ output += ".";
 output += runtime.suppressValue(t_4, env.opts.autoescape);
 output += "\">";
 output += runtime.suppressValue(t_5, env.opts.autoescape);
-output += "</a></li>\n                    ";
+output += "</a></li>\n                        ";
 ;
 }
 } else {
@@ -70,7 +70,7 @@ frame.set("loop.revindex0", t_2 - t_1 - 1);
 frame.set("loop.first", t_1 === 0);
 frame.set("loop.last", t_1 === t_2 - 1);
 frame.set("loop.length", t_2);
-output += "\n                    <li><a href=\"/run/";
+output += "\n                        <li><a href=\"/run/";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "run_id"), env.opts.autoescape);
 output += "/output/";
 output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "resultset_id"), env.opts.autoescape);
@@ -86,13 +86,71 @@ output += ".";
 output += runtime.suppressValue(t_6, env.opts.autoescape);
 output += "\">";
 output += runtime.suppressValue(t_7, env.opts.autoescape);
-output += "</a></li>\n                    ";
+output += "</a></li>\n                        ";
 ;
 }
 }
 }
 frame = frame.pop();
-output += "\n                </ul>\n            </div>\n        </div>\n    </div>\n    <table class='table'></table>\n</div>\n";
+output += "\n                    </ul>\n                </div>\n                <div class=\"btn-group\">\n                    <button type=\"button\" class=\"btn btn-info btn-xs dropdown-toggle\" data-toggle=\"dropdown\">\n                        Copy link <span class=\"caret\"></span>\n                    </button>\n                    <ul class=\"dropdown-menu dropdown-menu-right copy-link-menu\" role=\"menu\">\n                        ";
+frame = frame.push();
+var t_10 = {"tsv": "TSV","json": "JSON","json-lines": "JSON Lines","csv": "CSV","wikitable": "Wikitable","html": "HTML"};
+if(t_10) {var t_8;
+if(runtime.isArray(t_10)) {
+var t_9 = t_10.length;
+for(t_8=0; t_8 < t_10.length; t_8++) {
+var t_11 = t_10[t_8][0]
+frame.set("format", t_10[t_8][0]);
+var t_12 = t_10[t_8][1]
+frame.set("formatname", t_10[t_8][1]);
+frame.set("loop.index", t_8 + 1);
+frame.set("loop.index0", t_8);
+frame.set("loop.revindex", t_9 - t_8);
+frame.set("loop.revindex0", t_9 - t_8 - 1);
+frame.set("loop.first", t_8 === 0);
+frame.set("loop.last", t_8 === t_9 - 1);
+frame.set("loop.length", t_9);
+output += "\n                        <li><a href=\"/run/";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "run_id"), env.opts.autoescape);
+output += "/output/";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "resultset_id"), env.opts.autoescape);
+output += "/";
+output += runtime.suppressValue(t_11, env.opts.autoescape);
+output += "\">";
+output += runtime.suppressValue(t_12, env.opts.autoescape);
+output += "</a></li>\n                        ";
+;
+}
+} else {
+t_8 = -1;
+var t_9 = runtime.keys(t_10).length;
+for(var t_13 in t_10) {
+t_8++;
+var t_14 = t_10[t_13];
+frame.set("format", t_13);
+frame.set("formatname", t_14);
+frame.set("loop.index", t_8 + 1);
+frame.set("loop.index0", t_8);
+frame.set("loop.revindex", t_9 - t_8);
+frame.set("loop.revindex0", t_9 - t_8 - 1);
+frame.set("loop.first", t_8 === 0);
+frame.set("loop.last", t_8 === t_9 - 1);
+frame.set("loop.length", t_9);
+output += "\n                        <li><a href=\"/run/";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "run_id"), env.opts.autoescape);
+output += "/output/";
+output += runtime.suppressValue(runtime.contextOrFrameLookup(context, frame, "resultset_id"), env.opts.autoescape);
+output += "/";
+output += runtime.suppressValue(t_13, env.opts.autoescape);
+output += "\">";
+output += runtime.suppressValue(t_14, env.opts.autoescape);
+output += "</a></li>\n                        ";
+;
+}
+}
+}
+frame = frame.pop();
+output += "\n                    </ul>\n                </div>\n            </div>\n        </div>\n    </div>\n    <table class='table'></table>\n</div>\n";
 if(parentTemplate) {
 parentTemplate.rootRenderFunc(env, context, frame, runtime, cb);
 } else {
