@@ -24,12 +24,16 @@ class TestLogin:
         with self.client.session_transaction() as flask_sess:
             flask_sess["user_id"] = "MyUserID"
             flask_sess["request_token"] = "request token"
-            flask_sess["preferences"] = {"breakfast": "waffles", "lunch": "tacos"}
+            flask_sess["preferences"] = {
+                "breakfast": "waffles",
+                "lunch": "tacos",
+            }
             flask_sess["return_to_url"] = "return/to/url"
 
     def test_login(self, mocker):
         mocker.patch(
-            "mwoauth.Handshaker.initiate", return_value=("loginredir", "fake_token")
+            "mwoauth.Handshaker.initiate",
+            return_value=("loginredir", "fake_token"),
         )
         response = self.client.get("/login")
 

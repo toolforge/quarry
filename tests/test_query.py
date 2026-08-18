@@ -70,17 +70,23 @@ class TestQuery:
 
         assert response.status_code == 302
         assert (
-            response.headers["Location"] == "http://localhost/query/%d" % self.query_id
+            response.headers["Location"]
+            == "http://localhost/query/%d" % self.query_id
         )
 
-        self.db_session.filter.assert_has_calls([mocker.call(User.id == "MyUserID")])
+        self.db_session.filter.assert_has_calls(
+            [mocker.call(User.id == "MyUserID")]
+        )
 
         # Should redirect to login page if not logged in
         mocker.patch("quarry.web.query.get_user", return_value=None)
 
         response = self.client.get("/query/new")
         assert response.status_code == 302
-        assert response.headers["Location"] == "http://localhost/login?next=/query/new"
+        assert (
+            response.headers["Location"]
+            == "http://localhost/login?next=/query/new"
+        )
 
     def test_query_show(self, mocker):
         response = self.client.get("/query/%s" % self.query_id)
@@ -136,7 +142,9 @@ class TestQuery:
         assert response.status_code == 200
 
     def test_query_search_by_title(self, mocker):
-        response = self.client.get("/query/runs/all?search_term=%s" % self.query_title)
+        response = self.client.get(
+            "/query/runs/all?search_term=%s" % self.query_title
+        )
 
         assert response.status_code == 200
         assert response.data

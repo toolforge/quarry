@@ -75,7 +75,10 @@ class TestApi:
         # Simulate being logged in and authorized
         with self.client.session_transaction() as flask_sess:
             flask_sess["user_id"] = "MyUserID"
-            flask_sess["preferences"] = {"breakfast": "waffles", "lunch": "tacos"}
+            flask_sess["preferences"] = {
+                "breakfast": "waffles",
+                "lunch": "tacos",
+            }
 
     def test_unstar_query(self, mocker):
         response = self.client.post(
@@ -86,7 +89,9 @@ class TestApi:
         self.db_session.assert_has_calls([mocker.call.delete(Star)])
         assert response.status_code == 200
 
-        response = self.client.post("/api/query/unstar", data=dict(query_id="invalid"))
+        response = self.client.post(
+            "/api/query/unstar", data=dict(query_id="invalid")
+        )
         assert response.status_code == 404
 
         mocker.patch("quarry.web.api.get_user", return_value=None)
@@ -103,7 +108,9 @@ class TestApi:
         self.db_session.assert_has_calls([mocker.call.query(Query)])
         self.db_session.assert_has_calls([mocker.call.get(self.query_id)])
 
-        response = self.client.post("/api/query/star", data=dict(query_id="invalid"))
+        response = self.client.post(
+            "/api/query/star", data=dict(query_id="invalid")
+        )
         assert response.status_code == 404
 
         mocker.patch("quarry.web.api.get_user", return_value=None)
@@ -131,7 +138,9 @@ class TestApi:
         )
         assert response.status_code == 200
         self.db_session.assert_has_calls([mocker.call.query(Query)])
-        self.db_session.filter.assert_has_calls([mocker.call(User.id == "MyUserID")])
+        self.db_session.filter.assert_has_calls(
+            [mocker.call(User.id == "MyUserID")]
+        )
         result_dict = json.loads(response.data.decode("utf8"))
         assert result_dict["id"] == self.query_id
 
@@ -166,7 +175,9 @@ class TestApi:
         response = self.client.post(
             "/api/query/run",
             data=dict(
-                query_id=self.query_id, query_database="mywiki", text="show tables;"
+                query_id=self.query_id,
+                query_database="mywiki",
+                text="show tables;",
             ),
         )
         assert response.status_code == 200
@@ -176,7 +187,8 @@ class TestApi:
 
     def test_stop_query(self, mocker):
         response = self.client.post(
-            "/api/query/stop", data=dict(qrun_id=self.run_id, query_database="mywiki")
+            "/api/query/stop",
+            data=dict(qrun_id=self.run_id, query_database="mywiki"),
         )
         assert response.status_code == 200
         result_dict = json.loads(response.data.decode("utf8"))
@@ -184,7 +196,8 @@ class TestApi:
 
         mocker.patch("quarry.web.api.get_user", return_value=None)
         response = self.client.post(
-            "/api/query/stop", data=dict(qrun_id=self.run_id, query_database="mywiki")
+            "/api/query/stop",
+            data=dict(qrun_id=self.run_id, query_database="mywiki"),
         )
         assert response.status_code == 401
 
@@ -199,7 +212,8 @@ class TestApi:
 
         mocker.patch("quarry.web.api.get_user", return_value=None)
         response = self.client.post(
-            "/api/query/stop", data=dict(qrun_id=self.run_id, query_database="mywiki")
+            "/api/query/stop",
+            data=dict(qrun_id=self.run_id, query_database="mywiki"),
         )
         assert response.status_code == 401
 

@@ -35,7 +35,9 @@ class TestUser:
         self.client = client
 
         # Fake DB handler that anticipates upcoming queries:
-        ug = UserGroup(id=self.user_group_id, user_id=self.user_id, group_name="root")
+        ug = UserGroup(
+            id=self.user_group_id, user_id=self.user_id, group_name="root"
+        )
         u = User(id=self.user_id, username=self.user_name, wiki_uid="Test user")
         q = Query(
             id=self.query_id,
@@ -79,11 +81,16 @@ class TestUser:
         # Simulate being logged in and authorized
         with self.client.session_transaction() as flask_sess:
             flask_sess["user_id"] = self.user_id
-            flask_sess["preferences"] = {"breakfast": "waffles", "lunch": "tacos"}
+            flask_sess["preferences"] = {
+                "breakfast": "waffles",
+                "lunch": "tacos",
+            }
 
     def test_sudo(self, mocker):
         response = self.client.get("/sudo/%s" % self.user_id)
-        self.db_session.filter.assert_has_calls([mocker.call(User.id == self.user_id)])
+        self.db_session.filter.assert_has_calls(
+            [mocker.call(User.id == self.user_id)]
+        )
         self.db_session.assert_has_calls([mocker.call.query(UserGroup)])
         self.db_session.filter.assert_has_calls(
             [

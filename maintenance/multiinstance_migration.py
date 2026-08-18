@@ -11,7 +11,6 @@ import pymysql
 from pymysql.cursors import Cursor
 import yaml
 
-
 BATCH_SIZE = 300
 
 
@@ -53,7 +52,9 @@ def extract_dbnames(qtext: str, qdb: str, regex, db_regex) -> Optional[str]:
     return dbs[0]
 
 
-def write_execute(cursor: Cursor, query: str, dry_run: bool = False, *args) -> None:
+def write_execute(
+    cursor: Cursor, query: str, dry_run: bool = False, *args
+) -> None:
     """Do operation or simulate
     :param cursor: Cursor
     :param query: str
@@ -128,7 +129,9 @@ def main() -> None:
         conn.commit()
         cursor.execute("SELECT id, text, query_database from query_revision;")
         queries = cursor.fetchmany(BATCH_SIZE)
-        db_regex = re.compile(r"^(?:(?:centralauth|meta|[a-z]*wik[a-z]+)(?:_p)?)?$")
+        db_regex = re.compile(
+            r"^(?:(?:centralauth|meta|[a-z]*wik[a-z]+)(?:_p)?)?$"
+        )
         regex = re.compile(r"(use|USE)\s+(?P<db>\w+)\s*;")
         while queries:
             for q_id, text, query_database in queries:  # type: ignore[misc]
