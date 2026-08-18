@@ -1,4 +1,4 @@
-from mock_alchemy.mocking import UnifiedAlchemyMagicMock
+from tests.db_mock import session_mock
 
 from quarry.web.models.query import Query
 from quarry.web.models.queryrevision import QueryRevision
@@ -8,7 +8,7 @@ from quarry.web.models.user import User
 
 class TestApp:
     def test_frontpage(self, mocker, client):
-        self.db_session = UnifiedAlchemyMagicMock()
+        self.db_session = session_mock()
 
         # Homepage shows statistics
         for user_id in range(5):
@@ -26,7 +26,8 @@ class TestApp:
 
         mocker.patch(
             "quarry.web.connections.Connections.session",
-            new_callable=mocker.PropertyMock(return_value=self.db_session),
+            new_callable=mocker.PropertyMock,
+            return_value=self.db_session,
         )
 
         response = client.get("/")

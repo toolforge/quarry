@@ -1,7 +1,7 @@
 from datetime import datetime
 import pytest
 
-from mock_alchemy.mocking import UnifiedAlchemyMagicMock
+from tests.db_mock import session_mock
 
 from quarry.web.models.query import Query
 from quarry.web.models.star import Star
@@ -62,7 +62,7 @@ class TestResults:
             query_id=self.query_id,
         )
 
-        self.db_session = UnifiedAlchemyMagicMock()
+        self.db_session = session_mock()
 
         mocker.patch("sqlite3.connect", return_value=self.db_session)
 
@@ -76,7 +76,8 @@ class TestResults:
 
         mocker.patch(
             "quarry.web.connections.Connections.session",
-            new_callable=mocker.PropertyMock(return_value=self.db_session),
+            new_callable=mocker.PropertyMock,
+            return_value=self.db_session,
         )
 
         # Simulate being logged in and authorized
@@ -97,13 +98,9 @@ class TestResults:
         )
         assert writer.column_count == 6
         assert writer.cur_row_id == 0
-        self.db_session.assert_has_calls(
-            [
-                mocker.call(
-                    'CREATE TABLE resultset_555 (__id__ INTEGER PRIMARY KEY, "manny", "moe", '
-                    '"moe_2", "moe_3", """jack""", "nulltest")'
-                )
-            ]
+        self.db_session.execute.assert_any_call(
+            'CREATE TABLE resultset_555 (__id__ INTEGER PRIMARY KEY, "manny", "moe", '
+            '"moe_2", "moe_3", """jack""", "nulltest")'
         )
 
     def test_add_rows(self, mocker):
@@ -113,24 +110,21 @@ class TestResults:
         writer.add_rows(
             [["row0arg0", "row0arg1", "row0arg2"], ["row1arg0", "row1arg1", "row1arg2"]]
         )
-        self.db_session.assert_has_calls(
+        self.db_session.executemany.assert_called_once_with(
+            "INSERT INTO resultset_0 VALUES (NULL, ?,?,?)",
             [
-                mocker.call(
-                    "INSERT INTO resultset_0 VALUES (NULL, ?,?,?)",
-                    [
-                        ["row0arg0", "row0arg1", "row0arg2"],
-                        ["row1arg0", "row1arg1", "row1arg2"],
-                    ],
-                )
-            ]
+                ["row0arg0", "row0arg1", "row0arg2"],
+                ["row1arg0", "row1arg1", "row1arg2"],
+            ],
         )
+
 
     def test_get_resultsets(self, mocker):
         reader = results.SQLiteResultReader(self.qr, self.path_template)
         resultsets = reader.get_resultsets()
         assert resultsets == []
-        self.db_session.assert_has_calls(
-            [mocker.call("SELECT id, headers, rowcount FROM resultsets ORDER BY id")]
+        self.db_session.cursor.return_value.execute.assert_called_once_with(
+            "SELECT id, headers, rowcount FROM resultsets ORDER BY id"
         )
 
     def test_get_rows(self, mocker):

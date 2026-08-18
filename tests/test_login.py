@@ -1,6 +1,6 @@
 import pytest
 
-from mock_alchemy.mocking import UnifiedAlchemyMagicMock
+from tests.db_mock import session_mock
 
 
 # @pytest.mark.usefixtures([mocker, client])
@@ -13,11 +13,12 @@ class TestLogin:
         self.client = client
 
         # Fake DB handler that anticipates upcoming queries:
-        self.db_session = UnifiedAlchemyMagicMock()
+        self.db_session = session_mock()
 
         mocker.patch(
             "quarry.web.connections.Connections.session",
-            new_callable=mocker.PropertyMock(return_value=self.db_session),
+            new_callable=mocker.PropertyMock,
+            return_value=self.db_session,
         )
 
         # Simulate being logged in and authorized
@@ -34,14 +35,14 @@ class TestLogin:
         response = self.client.get("/login")
 
         assert response.status_code == 302
-        assert response.headers["Location"] == "http://localhost/loginredir"
+        assert response.headers["Location"] == "loginredir"
 
     def test_oauth_callback(self, mocker):
         print("first try")
         response = self.client.get("/oauth-callback?woopity=bloopity")
 
         assert response.status_code == 302
-        assert response.headers["Location"] == "http://localhost/"
+        assert response.headers["Location"] == "/"
 
         mocker.patch("mwoauth.Handshaker.complete", return_value=("fake_token"))
         mocker.patch(
@@ -52,10 +53,10 @@ class TestLogin:
         response = self.client.get("/oauth-callback?woopity=bloopity")
 
         assert response.status_code == 302
-        assert response.headers["Location"] == "http://localhost/return/to/url"
+        assert response.headers["Location"] == "return/to/url"
 
     def test_logout(self, mocker):
         response = self.client.get("/logout")
 
         assert response.status_code == 302
-        assert response.headers["Location"] == "http://localhost/"
+        assert response.headers["Location"] == "/"

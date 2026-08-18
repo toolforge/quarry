@@ -16,6 +16,11 @@ class IterI(io.BytesIO):
         self.pos = 0
         self.buffer = b""
         super().__init__()
+        if callable(generator):
+            generator(self)
+
+    def __iter__(self):
+        return iter((self.buffer,)) if self.buffer else iter(())
 
     def write(self, s):
         if s:

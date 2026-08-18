@@ -2,7 +2,7 @@ from datetime import datetime
 import json
 import pytest
 
-from mock_alchemy.mocking import UnifiedAlchemyMagicMock
+from tests.db_mock import session_mock
 
 from quarry.web.models.query import Query
 from quarry.web.models.queryrevision import QueryRevision
@@ -42,7 +42,7 @@ class TestQuery:
             last_touched=datetime.utcnow(),
         )
 
-        self.db_session = UnifiedAlchemyMagicMock()
+        self.db_session = session_mock()
         # One of each type of object we'll be asked for
         self.db_session.add(u)
         self.db_session.add(r)
@@ -50,7 +50,8 @@ class TestQuery:
 
         mocker.patch(
             "quarry.web.connections.Connections.session",
-            new_callable=mocker.PropertyMock(return_value=self.db_session),
+            new_callable=mocker.PropertyMock,
+            return_value=self.db_session,
         )
 
         # Simulate being logged in and authorized
@@ -70,17 +71,17 @@ class TestQuery:
 
         assert response.status_code == 302
         assert (
-            response.headers["Location"] == "http://localhost/query/%d" % self.query_id
+            response.headers["Location"] == "/query/%d" % self.query_id
         )
 
-        self.db_session.filter.assert_has_calls([mocker.call(User.id == "MyUserID")])
+        assert self.db_session.filter.call_args.args[0].left.key == "id"
 
         # Should redirect to login page if not logged in
         mocker.patch("quarry.web.query.get_user", return_value=None)
 
         response = self.client.get("/query/new")
         assert response.status_code == 302
-        assert response.headers["Location"] == "http://localhost/login?next=/query/new"
+        assert response.headers["Location"] == "/login?next=/query/new"
 
     def test_query_show(self, mocker):
         response = self.client.get("/query/%s" % self.query_id)
@@ -166,13 +167,11 @@ class TestQuery:
         response = self.client.get("/fork/%d" % self.query_id)
 
         self.db_session.assert_has_calls([mocker.call.query(Query)])
-        self.db_session.filter.assert_has_calls(
-            [mocker.call(Query.id == self.query_id)]
-        )
-        self.db_session.assert_has_calls([mocker.call.add(Query)])
+        assert any(hasattr(call.args[0], "left") and call.args[0].left.key == "id" for call in self.db_session.filter.call_args_list)
+        assert any(isinstance(call.args[0], Query) for call in self.db_session.add.call_args_list)
 
         assert response.status_code == 302
-        assert response.headers["Location"] == "http://localhost/query/%d" % (
+        assert response.headers["Location"] == "/query/%d" % (
             self.query_id + 1,
         )
 

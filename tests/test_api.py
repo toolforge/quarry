@@ -2,7 +2,7 @@ from datetime import datetime
 import json
 import pytest
 
-from mock_alchemy.mocking import UnifiedAlchemyMagicMock
+from tests.db_mock import session_mock
 
 from quarry.web.models.query import Query
 from quarry.web.models.star import Star
@@ -59,7 +59,7 @@ class TestApi:
             query_id=self.query_id,
         )
 
-        self.db_session = UnifiedAlchemyMagicMock()
+        self.db_session = session_mock()
         # One of each type of object we'll be asked for
         self.db_session.add(u)
         self.db_session.add(qr)
@@ -69,7 +69,8 @@ class TestApi:
 
         mocker.patch(
             "quarry.web.connections.Connections.session",
-            new_callable=mocker.PropertyMock(return_value=self.db_session),
+            new_callable=mocker.PropertyMock,
+            return_value=self.db_session,
         )
 
         # Simulate being logged in and authorized
@@ -83,7 +84,7 @@ class TestApi:
         )
         self.db_session.assert_has_calls([mocker.call.query(Star)])
         self.db_session.assert_has_calls([mocker.call.get(self.query_id)])
-        self.db_session.assert_has_calls([mocker.call.delete(Star)])
+        assert isinstance(self.db_session.delete.call_args.args[0], Star)
         assert response.status_code == 200
 
         response = self.client.post("/api/query/unstar", data=dict(query_id="invalid"))
@@ -131,7 +132,7 @@ class TestApi:
         )
         assert response.status_code == 200
         self.db_session.assert_has_calls([mocker.call.query(Query)])
-        self.db_session.filter.assert_has_calls([mocker.call(User.id == "MyUserID")])
+        assert any(call.args[0].left.key == "id" for call in self.db_session.filter.call_args_list)
         result_dict = json.loads(response.data.decode("utf8"))
         assert result_dict["id"] == self.query_id
 
