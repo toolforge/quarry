@@ -18,8 +18,8 @@ spec:
         - name: web
           image: {{ .Values.web.repository }}:{{ .Values.web.tag }}
           imagePullPolicy: Always
-          command: ["gunicorn"]
-          args: ["-w", "2", "--bind", "0.0.0.0:5000", "wsgi:application"]
+          command: ["poetry"]
+          args: ["run", "gunicorn", "-w", "2", "--bind", "0.0.0.0:5000", "wsgi:application"]
           readinessProbe:
             httpGet:
               path: /
