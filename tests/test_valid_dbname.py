@@ -1,5 +1,6 @@
 from quarry.web.utils import valid_dbname
 
+
 PROJECTS = [
     "wiki",
     "wikibooks",

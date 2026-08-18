@@ -1,5 +1,6 @@
 import re
 
+
 VALID_DB_NAMES = re.compile(
     r"^(?:(?:(?:centralauth|meta|[0-9a-z_]*wik[a-z]+)(?:_p)?)|quarry(?:_p)?|s\d+__\w+_p)$"
 )

@@ -16,6 +16,7 @@ from .replica import Replica
 from .utils import monkey as _unused  # noqa: F401
 from .webhelpers import get_pretty_delay
 
+
 celery_log = get_task_logger(__name__)
 
 celery = Celery("quarry.web.worker")

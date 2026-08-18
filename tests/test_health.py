@@ -55,16 +55,14 @@ def test_health(mocker, client):
         session.filter.assert_has_calls(
             [
                 mocker.call(
-                    Query.last_touched
-                    >= text("NOW() - INTERVAL %d MINUTE" % minutes)
+                    Query.last_touched >= text("NOW() - INTERVAL %d MINUTE" % minutes)
                 ),
                 mocker.call(
                     QueryRevision.timestamp
                     >= text("NOW() - INTERVAL %d MINUTE" % minutes)
                 ),
                 mocker.call(
-                    QueryRun.timestamp
-                    >= text("NOW() - INTERVAL %d MINUTE" % minutes)
+                    QueryRun.timestamp >= text("NOW() - INTERVAL %d MINUTE" % minutes)
                 ),
             ]
         )

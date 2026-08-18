@@ -35,9 +35,7 @@ class TestResults:
         self.client = client
 
         # Fake DB handler that anticipates upcoming queries:
-        ug = UserGroup(
-            id=self.user_group_id, user_id=self.user_id, group_name="root"
-        )
+        ug = UserGroup(id=self.user_group_id, user_id=self.user_id, group_name="root")
         u = User(id=self.user_id, username=self.user_name, wiki_uid="Test user")
         q = Query(
             id=self.query_id,
@@ -84,10 +82,7 @@ class TestResults:
         # Simulate being logged in and authorized
         with self.client.session_transaction() as flask_sess:
             flask_sess["user_id"] = self.user_id
-            flask_sess["preferences"] = {
-                "breakfast": "waffles",
-                "lunch": "tacos",
-            }
+            flask_sess["preferences"] = {"breakfast": "waffles", "lunch": "tacos"}
 
         self.path_template = "user_%s/query_%s/qr_%s"
 
@@ -98,15 +93,7 @@ class TestResults:
         writer.resultset_id = self.resultset_id
 
         writer.start_resultset(
-            [
-                "manny",
-                "moe",
-                "moe",
-                "moe",
-                '"jack"',
-                b"nulltest\x00".decode("utf8"),
-            ],
-            7,
+            ["manny", "moe", "moe", "moe", '"jack"', b"nulltest\x00".decode("utf8")], 7
         )
         assert writer.column_count == 6
         assert writer.cur_row_id == 0
@@ -124,10 +111,7 @@ class TestResults:
         writer.column_count = 3
 
         writer.add_rows(
-            [
-                ["row0arg0", "row0arg1", "row0arg2"],
-                ["row1arg0", "row1arg1", "row1arg2"],
-            ]
+            [["row0arg0", "row0arg1", "row0arg2"], ["row1arg0", "row1arg1", "row1arg2"]]
         )
         self.db_session.assert_has_calls(
             [
@@ -146,11 +130,7 @@ class TestResults:
         resultsets = reader.get_resultsets()
         assert resultsets == []
         self.db_session.assert_has_calls(
-            [
-                mocker.call(
-                    "SELECT id, headers, rowcount FROM resultsets ORDER BY id"
-                )
-            ]
+            [mocker.call("SELECT id, headers, rowcount FROM resultsets ORDER BY id")]
         )
 
     def test_get_rows(self, mocker):
