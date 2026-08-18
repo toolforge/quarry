@@ -1,1 +1,1 @@
-__package__ = 'quarry'
+__package__ = "quarry"

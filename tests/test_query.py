@@ -70,9 +70,7 @@ class TestQuery:
         response = self.client.get("/query/new")
 
         assert response.status_code == 302
-        assert (
-            response.headers["Location"] == "/query/%d" % self.query_id
-        )
+        assert response.headers["Location"] == "/query/%d" % self.query_id
 
         assert self.db_session.filter.call_args.args[0].left.key == "id"
 
@@ -137,7 +135,9 @@ class TestQuery:
         assert response.status_code == 200
 
     def test_query_search_by_title(self, mocker):
-        response = self.client.get("/query/runs/all?search_term=%s" % self.query_title)
+        response = self.client.get(
+            "/query/runs/all?search_term=%s" % self.query_title
+        )
 
         assert response.status_code == 200
         assert response.data
@@ -167,8 +167,14 @@ class TestQuery:
         response = self.client.get("/fork/%d" % self.query_id)
 
         self.db_session.assert_has_calls([mocker.call.query(Query)])
-        assert any(hasattr(call.args[0], "left") and call.args[0].left.key == "id" for call in self.db_session.filter.call_args_list)
-        assert any(isinstance(call.args[0], Query) for call in self.db_session.add.call_args_list)
+        assert any(
+            hasattr(call.args[0], "left") and call.args[0].left.key == "id"
+            for call in self.db_session.filter.call_args_list
+        )
+        assert any(
+            isinstance(call.args[0], Query)
+            for call in self.db_session.add.call_args_list
+        )
 
         assert response.status_code == 302
         assert response.headers["Location"] == "/query/%d" % (

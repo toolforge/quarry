@@ -23,9 +23,9 @@ def client(redisdb, mocker):
     # Make sure that we only ever use the redisdb function
     #  from pytest-redis
     mocker.patch(
-      "celery.backends.redis.RedisBackend.client",
-      new_callable=mocker.PropertyMock,
-      return_value=redisdb,
+        "celery.backends.redis.RedisBackend.client",
+        new_callable=mocker.PropertyMock,
+        return_value=redisdb,
     )
     mocker.patch("redis.Redis", return_value=redisdb)
 

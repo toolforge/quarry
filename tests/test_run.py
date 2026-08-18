@@ -34,7 +34,9 @@ class TestRun:
             title="a query with a grand title",
             last_touched=datetime.utcnow(),
         )
-        r = QueryRevision(id=self.rev_id, latest_run_id=self.resultset_id, query=q)
+        r = QueryRevision(
+            id=self.rev_id, latest_run_id=self.resultset_id, query=q
+        )
         qr = QueryRun(
             timestamp=datetime.utcnow(),
             status=self.complete_status,

@@ -1,4 +1,3 @@
-from sqlalchemy import text
 import json
 
 from tests.db_mock import session_mock
@@ -30,9 +29,10 @@ def test_health(mocker, client):
         rval = client.get("/.health/summary/v1/%d" % minutes)
         result_dict = json.loads(rval.data.decode("utf8"))
 
-        filter_keys = [call.args[0].left.key for call in session.filter.call_args_list]
+        filter_keys = [
+            call.args[0].left.key for call in session.filter.call_args_list
+        ]
         assert filter_keys == ["last_touched", "timestamp", "timestamp"]
-
 
         print(result_dict)
         assert result_dict["queries_num"] == 3

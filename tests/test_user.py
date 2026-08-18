@@ -1,6 +1,5 @@
 from datetime import datetime
 import pytest
-from sqlalchemy import func
 
 from tests.db_mock import session_mock
 
@@ -35,7 +34,9 @@ class TestUser:
         self.client = client
 
         # Fake DB handler that anticipates upcoming queries:
-        ug = UserGroup(id=self.user_group_id, user_id=self.user_id, group_name="sudo")
+        ug = UserGroup(
+            id=self.user_group_id, user_id=self.user_id, group_name="sudo"
+        )
         u = User(id=self.user_id, username=self.user_name, wiki_uid="Test user")
         q = Query(
             id=self.query_id,
@@ -80,7 +81,10 @@ class TestUser:
         # Simulate being logged in and authorized
         with self.client.session_transaction() as flask_sess:
             flask_sess["user_id"] = self.user_id
-            flask_sess["preferences"] = {"breakfast": "waffles", "lunch": "tacos"}
+            flask_sess["preferences"] = {
+                "breakfast": "waffles",
+                "lunch": "tacos",
+            }
 
     def test_sudo(self, mocker):
         response = self.client.get("/sudo/%s" % self.user_name)
@@ -92,7 +96,6 @@ class TestUser:
     def test_user_page(self, mocker):
         mocker.patch("quarry.web.user.get_user", return_value=None)
         response = self.client.get("/%s" % self.user_name)
-        test_user_name = self.user_name.replace("_", " ").lower()
 
         assert self.db_session.filter.called
         assert response.status_code == 200

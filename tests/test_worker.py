@@ -57,7 +57,9 @@ class TestWorker:
         self.client = client
 
         # Fake DB handler that anticipates upcoming queries:
-        self.user = User(id="MyUserID", username="test user", wiki_uid="Test user")
+        self.user = User(
+            id="MyUserID", username="test user", wiki_uid="Test user"
+        )
         self.query = Query(
             id=self.query_id,
             description="fake query entry",
@@ -100,7 +102,10 @@ class TestWorker:
         # Simulate being logged in and authorized
         with self.client.session_transaction() as flask_sess:
             flask_sess["user_id"] = "MyUserID"
-            flask_sess["preferences"] = {"breakfast": "waffles", "lunch": "tacos"}
+            flask_sess["preferences"] = {
+                "breakfast": "waffles",
+                "lunch": "tacos",
+            }
 
     def test_run_query(self, mocker):
         mocker.patch("os.makedirs")
