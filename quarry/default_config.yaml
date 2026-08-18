@@ -42,8 +42,8 @@ TOOLS_DB_PASSWORD: ''
 
 QUARRY_P_HOST: 'db'
 QUARRY_P_PORT: 3306
-QUARRY_P_USER: ''
-QUARRY_P_PASSWORD: ''
+QUARRY_P_USER: 'quarry'
+QUARRY_P_PASSWORD: 'quarry'
 
 OUTPUT_PATH_TEMPLATE: '/results/%s/%s/%s.sqlite'
 REDIS_HOST: 'redis'

@@ -81,6 +81,7 @@ flask run
 ```
 
 **Note:** You may need to run local Redis and database services separately to avoid ConnectionErrors.
+**Note:** You may need to install some dependencies to be able to bulid the python wheels pulled by pip (like greenlet), for example `sudo dnf install python3-devel gcc-c++` on fedora systems.
 
 ## Useful commands ##
 

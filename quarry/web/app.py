@@ -26,9 +26,11 @@ def setup_context():
 
 
 def kill_context(exception=None):
-    if g.conn:
-        g.conn.close_all()
-    del g.replica.connection
+    if hasattr(g, "conn"):
+        if g.conn:
+            g.conn.close_all()
+    if hasattr(g, "replica"):
+        del g.replica.connection
 
 
 def handle_internal_error(e: Exception):

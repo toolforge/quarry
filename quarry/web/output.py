@@ -3,7 +3,8 @@ import itertools
 import json
 import types
 
-from flask import Response, escape
+from flask import Response
+from markupsafe import escape
 import io
 
 

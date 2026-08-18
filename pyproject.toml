@@ -14,21 +14,35 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-flask = "2.3.3"
-flask-caching = "2.1.0"
-gunicorn = "21.2.0"
-pymysql = "1.0.2"
-redis = "3.5.3"
-sqlalchemy = "1.4.22"
-celery = "5.3.6"
-mwoauth = "0.3.7"
-prometheus-client = "0.12.0"
-prometheus-flask-exporter = "0.23.0"
-pyyaml = "6.0.2"
-pysocks = "1.7.1"
+python = "^3.13"
+flask = "^2.3.3"
+flask-caching = "^2.1.0"
+gunicorn = "^21.2.0"
+pymysql = "^1.0.2"
+redis = "^8.0"
+sqlalchemy = "^1.4.22"
+celery = "^5.3.6"
+mwoauth = "^0.3.7"
+prometheus-client = "^0.12.0"
+prometheus-flask-exporter = "^0.23.0"
+pyyaml = "^6.0.2"
+pysocks = "^1.7.1"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+test = [
+    "pytest (>=9.1.1,<10.0.0)",
+    "pytest-cov (>=7.1.0,<8.0.0)",
+    "pytest-mock (>=3.15.1,<4.0.0)",
+    "pytest-redis (>=4.0.0,<5.0.0)",
+    "flake8 (>=7.3.0,<8.0.0)",
+    "black (>=26.5.1,<27.0.0)",
+    "types-redis (>=4.6.0.20241004,<5.0.0.0)",
+    "types-requests (>=2.33.0.20260712,<3.0.0.0)",
+    "types-pyyaml (>=6.0.12.20260815,<7.0.0.0)",
+    "types-pymysql (>=1.2.0.20260807,<2.0.0.0)",
+]

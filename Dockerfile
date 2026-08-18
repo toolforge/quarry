@@ -1,4 +1,4 @@
-FROM docker-registry.wikimedia.org/python3-bookworm:latest
+FROM docker-registry.wikimedia.org/python3-trixie:latest
 
 # Create Quarry user, create /results folder owned by this user,
 # to be mounted as volume to be shared between web and runner in dev setup
@@ -9,7 +9,7 @@ RUN useradd -r -m quarry && \
 WORKDIR /app
 
 # 1. Update pip, install Poetry, and set venv path
-RUN pip install --break-system-packages --upgrade pip==24.0 wheel && \
+RUN pip install --break-system-packages --ignore-installed --upgrade pip wheel && \
     pip install --break-system-packages poetry
 ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 ENV PATH="/app/.venv/bin:$PATH"
