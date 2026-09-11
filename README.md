@@ -103,6 +103,10 @@ git-crypt unlock <path to encryption key>
 bash deploy.sh
 ```
 
+Openstack resources will be owned by the quarry-deploy service account. Credentials for
+that user can be found in [Pwstore](https://wikitech.wikimedia.org/wiki/Pwstore) in the
+quarry-deploy file.
+
 ### Testing and deploying a Pull Request ###
 
 After a PR has been reviewed, and if the CI runs successfully, the current
