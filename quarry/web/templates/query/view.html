@@ -22,11 +22,9 @@
 <div id="content" class="container {% if jsvars.can_edit %}edit{% else %}no-edit{% endif %} {% if jsvars.is_starred %}starred{% endif %} {% if query.published %}published {% endif %}">
     <div class="row" id="title-container">
 
-
         <div class="col-md-10">
             <h2><input type="textbox" id="title" {% if jsvars.can_edit %}placeholder="Click to add title..."{% else %}readonly{% endif %} value="{% if query.title %}{{query.title}}{% endif %}"> </input></h2>
         </div>
-
         <div class="col-md-2" id="title-actions-container">
             {% if user and not jsvars.can_edit %}
                 <a id="un-star-query" class="btn btn-info btn-sm only-starred">
@@ -39,7 +37,7 @@
             <a id="query-history" title="View history of runs for this query" href="/history/{{ query.id }}" class="btn btn-info btn-sm">
                 History
             </a>
-            <a id="fork-query" title="Create a copy of this query to modify and execute" href="/fork/{{ query.id }}{% if rev_id %}/{{ rev_id }}{% endif %}" class="btn btn-info btn-sm">
+            <a id="fork-query" title="Create a copy of this query to modify and execute" href="/fork/{{ query.id }}{% if rev_id %}/{{ rev_id }}{% endif %}" class="btn btn-info btn-sm" rel="nofollow">
                 Fork
             </a>
         </div>
@@ -106,7 +104,6 @@
             All SQL code is licensed under <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 License</a>.
         </div>
     </div>
-
     <div id="query-result-container">
         <h4 id="query-status">Checking query status...</h4>
         <div id="query-result"></div>
