@@ -1,3 +1,34 @@
 [tool.black]
 line-length = 80
 target_version = ['py311']
+
+[tool.poetry]
+name = "quarry"
+version = "0.1.0"
+description = "Quarry web application for running SQL queries."
+authors = ["Wikimedia Foundation"]
+license = "MIT"
+readme = "README.md"
+classifiers = [
+    "Private :: Do Not Upload"
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+flask = "2.3.3"
+flask-caching = "2.1.0"
+gunicorn = "21.2.0"
+pymysql = "1.0.2"
+redis = "3.5.3"
+sqlalchemy = "1.4.22"
+celery = "5.3.6"
+mwoauth = "0.3.7"
+prometheus-client = "0.12.0"
+prometheus-flask-exporter = "0.23.0"
+pyyaml = "6.0.2"
+pysocks = "1.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
