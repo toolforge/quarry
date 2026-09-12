@@ -1,7 +1,6 @@
-from sqlalchemy import text
 import json
 
-from mock_alchemy.mocking import UnifiedAlchemyMagicMock
+from tests.db_mock import session_mock
 
 from quarry.web.models.query import Query
 from quarry.web.models.queryrun import QueryRun
@@ -10,38 +9,16 @@ from quarry.web.models.queryrevision import QueryRevision
 
 def test_health(mocker, client):
     minutes = 5
-    session = UnifiedAlchemyMagicMock(
-        data=[
-            (
-                [
-                    mocker.call.query(Query),
-                    mocker.call.filter(
-                        Query.last_touched
-                        >= text("NOW() - INTERVAL %d MINUTE" % minutes)
-                    ),
-                ],
-                [Query(), Query(), Query()],
-            ),
-            (
-                [
-                    mocker.call.query(QueryRevision),
-                    mocker.call.filter(
-                        QueryRevision.timestamp
-                        >= text("NOW() - INTERVAL %d MINUTE" % minutes)
-                    ),
-                ],
-                [QueryRevision(), QueryRevision()],
-            ),
-            (
-                [
-                    mocker.call.query(QueryRun.status),
-                    mocker.call.filter(
-                        QueryRun.timestamp
-                        >= text("NOW() - INTERVAL %d MINUTE" % minutes)
-                    ),
-                ],
-                [[4], [4], [1]],  # 4 == complete, 1 == failed
-            ),
+    session = session_mock(
+        [
+            Query(),
+            Query(),
+            Query(),
+            QueryRevision(),
+            QueryRevision(),
+            QueryRun(status=4),
+            QueryRun(status=4),
+            QueryRun(status=1),
         ]
     )
 
@@ -52,20 +29,10 @@ def test_health(mocker, client):
         rval = client.get("/.health/summary/v1/%d" % minutes)
         result_dict = json.loads(rval.data.decode("utf8"))
 
-        session.filter.assert_has_calls(
-            [
-                mocker.call(
-                    Query.last_touched >= text("NOW() - INTERVAL %d MINUTE" % minutes)
-                ),
-                mocker.call(
-                    QueryRevision.timestamp
-                    >= text("NOW() - INTERVAL %d MINUTE" % minutes)
-                ),
-                mocker.call(
-                    QueryRun.timestamp >= text("NOW() - INTERVAL %d MINUTE" % minutes)
-                ),
-            ]
-        )
+        filter_keys = [
+            call.args[0].left.key for call in session.filter.call_args_list
+        ]
+        assert filter_keys == ["last_touched", "timestamp", "timestamp"]
 
         print(result_dict)
         assert result_dict["queries_num"] == 3

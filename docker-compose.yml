@@ -6,10 +6,9 @@ services:
     build: .
     # To mimic a production runtime, uncomment:
     # entrypoint: ["gunicorn", "-w", "2", "--bind", "0.0.0.0:5000", "wsgi:application"]
-    entrypoint: ["python3", "wsgi.py"]
+    entrypoint: ["poetry", "run", "python3", "wsgi.py"]
     volumes:
-      - .:/app
-      - results:/results
+      - results:/results:rw,Z
     ports:
       - "5000:5000"
     depends_on:
@@ -20,9 +19,8 @@ services:
   worker:
     build: .
     volumes:
-      - .:/app
-      - results:/results
-    entrypoint: ["celery", "--app", "quarry.web.worker", "worker", ]
+      - results:/results:rw,Z
+    entrypoint: ["poetry", "run", "celery", "--app", "quarry.web.worker", "worker", ]
     extra_hosts:
     - "host.docker.internal:host-gateway"
     depends_on:
@@ -36,7 +34,7 @@ services:
   mywiki:
     image: mariadb:10.4-focal
     volumes:
-      - ./docker-replica/replica.sql:/docker-entrypoint-initdb.d/replica.sql
+      - ./docker-replica/replica.sql:/docker-entrypoint-initdb.d/replica.sql:ro,Z
     environment:
       MYSQL_USER: repl
       MYSQL_PASSWORD: repl
@@ -46,7 +44,7 @@ services:
   db:
     image: mariadb:10.1.48-bionic
     volumes:
-      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro,Z
     environment:
       MYSQL_USER: quarry
       MYSQL_PASSWORD: quarry

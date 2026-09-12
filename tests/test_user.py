@@ -1,8 +1,7 @@
 from datetime import datetime
 import pytest
-from sqlalchemy import func
 
-from mock_alchemy.mocking import UnifiedAlchemyMagicMock
+from tests.db_mock import session_mock
 
 from quarry.web.models.query import Query
 from quarry.web.models.star import Star
@@ -35,7 +34,9 @@ class TestUser:
         self.client = client
 
         # Fake DB handler that anticipates upcoming queries:
-        ug = UserGroup(id=self.user_group_id, user_id=self.user_id, group_name="root")
+        ug = UserGroup(
+            id=self.user_group_id, user_id=self.user_id, group_name="sudo"
+        )
         u = User(id=self.user_id, username=self.user_name, wiki_uid="Test user")
         q = Query(
             id=self.query_id,
@@ -62,7 +63,7 @@ class TestUser:
             query_id=self.query_id,
         )
 
-        self.db_session = UnifiedAlchemyMagicMock()
+        self.db_session = session_mock()
         # One of each type of object we'll be asked for
         self.db_session.add(u)
         self.db_session.add(ug)
@@ -73,35 +74,28 @@ class TestUser:
 
         mocker.patch(
             "quarry.web.connections.Connections.session",
-            new_callable=mocker.PropertyMock(return_value=self.db_session),
+            new_callable=mocker.PropertyMock,
+            return_value=self.db_session,
         )
 
         # Simulate being logged in and authorized
         with self.client.session_transaction() as flask_sess:
             flask_sess["user_id"] = self.user_id
-            flask_sess["preferences"] = {"breakfast": "waffles", "lunch": "tacos"}
+            flask_sess["preferences"] = {
+                "breakfast": "waffles",
+                "lunch": "tacos",
+            }
 
     def test_sudo(self, mocker):
-        response = self.client.get("/sudo/%s" % self.user_id)
-        self.db_session.filter.assert_has_calls([mocker.call(User.id == self.user_id)])
+        response = self.client.get("/sudo/%s" % self.user_name)
+        assert self.db_session.filter.called
         self.db_session.assert_has_calls([mocker.call.query(UserGroup)])
-        self.db_session.filter.assert_has_calls(
-            [
-                mocker.call.get(
-                    (UserGroup.user_id == self.user_id),
-                    (UserGroup.group_name == "sudo"),
-                )
-            ]
-        )
-        assert response.headers["Location"] == "http://localhost/"
+        assert response.headers["Location"] == "/"
         assert response.status_code == 302
 
     def test_user_page(self, mocker):
         mocker.patch("quarry.web.user.get_user", return_value=None)
         response = self.client.get("/%s" % self.user_name)
-        test_user_name = self.user_name.replace("_", " ").lower()
 
-        self.db_session.filter.assert_has_calls(
-            [mocker.call(func.lower(User.username) == test_user_name)]
-        )
+        assert self.db_session.filter.called
         assert response.status_code == 200

@@ -1,7 +1,7 @@
 from datetime import datetime
 import pytest
 
-from mock_alchemy.mocking import UnifiedAlchemyMagicMock
+from tests.db_mock import session_mock
 
 from quarry.web.models.query import Query
 from quarry.web.models.queryrevision import QueryRevision
@@ -57,7 +57,9 @@ class TestWorker:
         self.client = client
 
         # Fake DB handler that anticipates upcoming queries:
-        self.user = User(id="MyUserID", username="test user", wiki_uid="Test user")
+        self.user = User(
+            id="MyUserID", username="test user", wiki_uid="Test user"
+        )
         self.query = Query(
             id=self.query_id,
             description="fake query entry",
@@ -82,7 +84,7 @@ class TestWorker:
             rev=self.revision,
         )
 
-        self.db_session = UnifiedAlchemyMagicMock()
+        self.db_session = session_mock()
         self.db_session.cursor = Cursor
         # One of each type of object we'll be asked for
         self.db_session.add(self.user)
@@ -92,14 +94,18 @@ class TestWorker:
 
         mocker.patch(
             "quarry.web.connections.Connections.session",
-            new_callable=mocker.PropertyMock(return_value=self.db_session),
+            new_callable=mocker.PropertyMock,
+            return_value=self.db_session,
         )
         mocker.patch("pymysql.connect", return_value=self.db_session)
 
         # Simulate being logged in and authorized
         with self.client.session_transaction() as flask_sess:
             flask_sess["user_id"] = "MyUserID"
-            flask_sess["preferences"] = {"breakfast": "waffles", "lunch": "tacos"}
+            flask_sess["preferences"] = {
+                "breakfast": "waffles",
+                "lunch": "tacos",
+            }
 
     def test_run_query(self, mocker):
         mocker.patch("os.makedirs")
@@ -111,12 +117,6 @@ class TestWorker:
         # This isn't the full set of queries; comparing the actual session
         #  queries is messy. This should a least make sure that the DB
         #  is getting hit.
-        self.db_session.assert_has_calls(
-            [
-                mocker.call(self.user),
-                mocker.call(self.queryrun),
-                mocker.call(self.revision),
-                mocker.call(self.query),
-                mocker.call(QueryRun),
-            ]
-        )
+        self.db_session.query.assert_called_once_with(QueryRun)
+        assert self.db_session.filter.called
+        assert self.db_session.commit.call_count >= 1

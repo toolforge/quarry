@@ -2,7 +2,7 @@ from datetime import datetime
 import json
 import pytest
 
-from mock_alchemy.mocking import UnifiedAlchemyMagicMock
+from tests.db_mock import session_mock
 
 from quarry.web.models.query import Query
 from quarry.web.models.queryrevision import QueryRevision
@@ -34,7 +34,9 @@ class TestRun:
             title="a query with a grand title",
             last_touched=datetime.utcnow(),
         )
-        r = QueryRevision(id=self.rev_id, latest_run_id=self.resultset_id, query=q)
+        r = QueryRevision(
+            id=self.rev_id, latest_run_id=self.resultset_id, query=q
+        )
         qr = QueryRun(
             timestamp=datetime.utcnow(),
             status=self.complete_status,
@@ -45,7 +47,7 @@ class TestRun:
             rev=r,
         )
 
-        self.db_session = UnifiedAlchemyMagicMock()
+        self.db_session = session_mock()
         # One of each type of object we'll be asked for
         self.db_session.add(u)
         self.db_session.add(qr)
@@ -54,7 +56,8 @@ class TestRun:
 
         mocker.patch(
             "quarry.web.connections.Connections.session",
-            new_callable=mocker.PropertyMock(return_value=self.db_session),
+            new_callable=mocker.PropertyMock,
+            return_value=self.db_session,
         )
 
         # Simulate being logged in and authorized

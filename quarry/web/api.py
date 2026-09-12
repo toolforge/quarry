@@ -74,8 +74,8 @@ def api_set_meta() -> Tuple[Union[str, Response], int]:
         return "Authorization denied", 403
 
     if "title" in request.form:
-        title = request.form["title"]
-        if not title.strip():
+        title: str | None = request.form["title"]
+        if not title or not title.strip():
             title = None
         query.title = title
     if "published" in request.form:
@@ -195,7 +195,7 @@ def api_stop_query() -> Tuple[Union[str, Response], int]:
 
 
 @api_blueprint.route("/api/preferences/get/<key>")
-def pref_get(key) -> Response:
+def pref_get(key) -> Response | Tuple[str, int]:
     if get_user() is None:
         return "Authentication required", 401
 
