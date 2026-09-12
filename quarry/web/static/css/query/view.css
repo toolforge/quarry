@@ -95,6 +95,22 @@ table#query-results-sampled {
     margin-bottom: 12px;
 }
 
+.copy-link-status {
+    float: left;
+    margin-right: 8px;
+    line-height: 22px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 1.5s ease-out;
+}
+
+.copy-link-status.copy-link-status-shown {
+    opacity: 1;
+    /* Appear at once, fade away slowly. */
+    transition: none;
+}
+
 div.dataTables_info {
 	margin: 0 0 10.5px;
 }
