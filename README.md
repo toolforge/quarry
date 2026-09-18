@@ -195,8 +195,8 @@ a new listener and a pool.
 4) add a health monitor, also for http
 
 Now you can point the web proxy to port 80 on the load balancer rather than
-directly at a kubernetes worker.
-
+directly at a kubernetes worker. That doesn't really eliminate SPOFs but it
+will balance traffic among the different worker nodes which may be useful.
 
 
 ## troubleshooting ##
