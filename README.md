@@ -167,6 +167,38 @@ setup left intact.
 The failover between clusters is largely harmless to users since most state is
 stored outside the cluster.
 
+## load-balanced deployment via octavia load-balancer ##
+
+The above instructions say "Adjust the web proxy entry in Horizon to point
+to node-0 in the new magnum cluster" which should work! However, we can do
+a bit better.
+
+Modern Magnum creates an octavia load-balancer in front of the kubernetes
+cluster which we are bypassing by pointing our proxy at a single worker node.
+Because of chicken/egg issues with magnum and tofu it is difficult to
+automatically deploy with the load balancer, but this can be configured manually.
+
+The magnum-created load balancer will have a name like
+
+'k8s-clusterapi-cluster-magnum-system-kube-i98u3-kubeapi'
+
+It will already have a listener constructed, which wraps the k8s
+api. You can ignore that one.
+
+To configure it to balance our new k8s cluster, we need to add
+a new listener and a pool.
+
+1) Add a listener named 'http' that listens on http/port 80 and adds
+   "X-Forwarded-For=True"
+2) Add a pool (also named 'http') to that listener with SOURCE_IP algorithm
+3) add every k8s worker to that pool for port 32700
+4) add a health monitor, also for http
+
+Now you can point the web proxy to port 80 on the load balancer rather than
+directly at a kubernetes worker.
+
+
+
 ## troubleshooting ##
 If ansible doesn't detect a change for quarry helm the following can be run:
 `helm -n quarry upgrade --install quarry helm-quarry -f helm-quarry/prod-env.yaml`
