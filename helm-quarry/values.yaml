@@ -1,6 +1,7 @@
 web:
   repository: 'quay.io/wikimedia-quarry/quarry'
-  tag: pr-104 # web tag managed by github actions
+  tag: pr-105 # web tag managed by github actions
+
   resources:
     requests:
       memory: "300Mi"
@@ -11,7 +12,7 @@ web:
 
 worker:
   repository: 'quay.io/wikimedia-quarry/quarry'
-  tag: pr-104 # worker tag managed by github actions
+  tag: pr-105 # worker tag managed by github actions
   resources:
     requests:
       memory: "400Mi"
