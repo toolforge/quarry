@@ -1,6 +1,7 @@
 web:
   repository: 'quay.io/wikimedia-quarry/quarry'
   tag: pr-105 # web tag managed by github actions
+
   resources:
     requests:
       memory: "300Mi"
