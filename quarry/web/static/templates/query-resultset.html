@@ -6,7 +6,7 @@
             {% else %}
             Resultset {{ resultset_number }}
             {% endif %}
-            ({{rowcount}} rows)
+            ({{ rowcount }} {% if rowcount == 1 %}row{% else %}rows{% endif %})
         </div>
         <div class='col-md-4'>
             <div class="btn-group pull-right">
