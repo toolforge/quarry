@@ -20,13 +20,13 @@ resource "openstack_containerinfra_clustertemplate_v1" "template_136" {
   fixed_subnet          = "vxlan-dualstack-ipv4"
   fixed_network         = "VXLAN/IPv6-dualstack"
   flavor                = "g4.cores4.ram8.disk20"
-  image                 = "ubuntu-22.04-v1.36.4-for-magnum"
+  image                 = "ubuntu-22.04-v1.36.5-for-magnum"
   master_flavor         = "g4.cores2.ram4.disk20"
   master_lb_enabled     = "true"
   network_driver        = "calico"
 
   labels = {
-    kube_tag                       = "v1.36.4"
+    kube_tag                       = "v1.36.5"
     container_runtime              = "containerd"
     containerd_version             = "1.6.28"
     containerd_tarball_sha256      = "f70736e52d61e5ad225f4fd21643b5ca1220013ab8b6c380434caeefb572da9b"
