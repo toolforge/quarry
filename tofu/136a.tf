@@ -1,17 +1,17 @@
-resource "openstack_containerinfra_cluster_v1" "k8s_136" {
-  name                = "quarry-136"
-  cluster_template_id = resource.openstack_containerinfra_clustertemplate_v1.template_136.id
+resource "openstack_containerinfra_cluster_v1" "k8s_136a" {
+  name                = "quarry-136a"
+  cluster_template_id = resource.openstack_containerinfra_clustertemplate_v1.template_136a.id
   master_count        = 1
   node_count          = 3
 }
 
 resource "local_file" "kube_config" {
-  content  = resource.openstack_containerinfra_cluster_v1.k8s_136.kubeconfig.raw_config
+  content  = resource.openstack_containerinfra_cluster_v1.k8s_136a.kubeconfig.raw_config
   filename = "kube.config"
 }
 
-resource "openstack_containerinfra_clustertemplate_v1" "template_136" {
-  name                  = "quarry-136"
+resource "openstack_containerinfra_clustertemplate_v1" "template_136a" {
+  name                  = "quarry-136a"
   coe                   = "kubernetes"
   dns_nameserver        = "8.8.8.8"
   docker_storage_driver = "overlay2"
