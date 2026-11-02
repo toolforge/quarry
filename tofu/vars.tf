@@ -9,5 +9,5 @@ variable "tenant_id" {
 }
 variable "application_credential_id" {
   type = string
-  default = "f87c4ec574684cefb5b638ef3a4f1c71"
+  default = "5219385175b34239be24de627ec7b7cf"
 }
