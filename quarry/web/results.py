@@ -1,3 +1,4 @@
+import logging
 import json
 import os
 import sqlite3
@@ -124,7 +125,11 @@ class SQLiteResultReader(object):
             qrun.rev.query.id,
             qrun.id,
         )
-        self.db = sqlite3.connect(path)
+        try:
+            self.db = sqlite3.connect(path)
+        except sqlite3.OperationalError:
+            logging.exception(f"Unable to open results file {path}")
+            raise
         self.db.text_factory = str
 
     def get_resultsets(self):
