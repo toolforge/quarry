@@ -36,15 +36,17 @@ def output_result(qrun_id, resultset_id=0, format="json"):
     if not qrun:
         response = Response("No such query_run id", status=404)
     else:
-        reader = SQLiteResultReader(
-            qrun, current_app.config["OUTPUT_PATH_TEMPLATE"]
-        )
         try:
+            reader = SQLiteResultReader(
+                qrun, current_app.config["OUTPUT_PATH_TEMPLATE"]
+            )
             response = output.get_formatted_response(
                 format, qrun, reader, resultset_id
             )
         except sqlite3.OperationalError as e:
-            if e.args[0].startswith("no such table"):
+            if e.args[0].startswith("no such table") or e.args[0].startswith(
+                "unable to open database file"
+            ):
                 response = Response("No such resultset id", status=404)
             else:
                 raise
