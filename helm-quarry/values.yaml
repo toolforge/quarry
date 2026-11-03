@@ -4,10 +4,10 @@ web:
 
   resources:
     requests:
-      memory: "300Mi"
+      memory: "700Mi"
       cpu: "100m"
     limits:
-      memory: "500Mi"
+      memory: "2Gi"
       cpu: "1"
 
 worker:
