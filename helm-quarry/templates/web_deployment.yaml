@@ -19,7 +19,7 @@ spec:
           image: {{ .Values.web.repository }}:{{ .Values.web.tag }}
           imagePullPolicy: Always
           command: ["gunicorn"]
-          args: ["-w", "2", "--bind", "0.0.0.0:5000", "wsgi:application"]
+          args: ["-w", "4", "--bind", "0.0.0.0:5000", "wsgi:application"]
           readinessProbe:
             httpGet:
               path: /
@@ -33,6 +33,8 @@ spec:
             initialDelaySeconds: 90
             periodSeconds: 30
             failureThreshold: 4
+            # the liveness check hits the DB and such, it might be slower than 1s
+            timeoutSeconds: 5
           volumeMounts:
             - mountPath: "/results"
               name: results
