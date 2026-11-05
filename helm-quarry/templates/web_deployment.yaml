@@ -19,7 +19,8 @@ spec:
           image: {{ .Values.web.repository }}:{{ .Values.web.tag }}
           imagePullPolicy: Always
           command: ["gunicorn"]
-          args: ["-w", "4", "--bind", "0.0.0.0:5000", "wsgi:application"]
+          # gthread seems to behave better
+          args: ["-w", "4", "-k", "gthread", "--threads", "4", "--bind", "0.0.0.0:5000", "wsgi:application"]
           readinessProbe:
             httpGet:
               path: /
